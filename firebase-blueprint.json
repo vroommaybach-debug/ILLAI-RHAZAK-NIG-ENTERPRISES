@@ -1,0 +1,349 @@
+{
+  "entities": {
+    "Category": {
+      "title": "Category",
+      "description": "Product category definition for hardware catalog",
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "Unique URL slug",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of category",
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "description": "Category summary",
+          "maxLength": 500
+        },
+        "heroImage": {
+          "type": "string",
+          "description": "Path or URL to category hero asset",
+          "maxLength": 300
+        },
+        "order": {
+          "type": "number",
+          "description": "Display sort order"
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "Whether category is publicly visible"
+        }
+      },
+      "required": ["slug", "name", "description", "order", "visible"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Brand new hardware product listing with per-product warranty and kobo pricing",
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "Unique product URL slug",
+          "maxLength": 120,
+          "pattern": "^[a-z0-9\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Product full model name",
+          "maxLength": 160
+        },
+        "brand": {
+          "type": "string",
+          "description": "Manufacturer brand name",
+          "maxLength": 80
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "Category identifier (laptops, desktops, printers, scanners)",
+          "maxLength": 64
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "published", "archived"],
+          "description": "Publication status"
+        },
+        "priceKobo": {
+          "type": "number",
+          "description": "VAT-inclusive price in Nigerian kobo (integer)"
+        },
+        "compareAtKobo": {
+          "type": "number",
+          "description": "Optional compare-at strike-through price in kobo"
+        },
+        "stockQty": {
+          "type": "number",
+          "description": "Available inventory count"
+        },
+        "stockStatus": {
+          "type": "string",
+          "enum": ["in_stock", "low", "out"],
+          "description": "Derived stock availability status"
+        },
+        "warrantyMonths": {
+          "type": "number",
+          "description": "Warranty duration in months attached to this specific product"
+        },
+        "warrantyTerms": {
+          "type": "string",
+          "description": "Specific warranty coverage terms for this machine",
+          "maxLength": 600
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "Concise summary",
+          "maxLength": 400
+        },
+        "longDescription": {
+          "type": "string",
+          "description": "Sanitized detailed product description",
+          "maxLength": 4000
+        },
+        "seed": {
+          "type": "boolean",
+          "description": "Flag indicating initial seed data"
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "UID or email of admin who last updated the product",
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "slug",
+        "name",
+        "brand",
+        "categoryId",
+        "status",
+        "priceKobo",
+        "stockQty",
+        "stockStatus",
+        "warrantyMonths",
+        "warrantyTerms",
+        "shortDescription"
+      ]
+    },
+    "SpecSchema": {
+      "title": "SpecSchema",
+      "description": "Ordered specification field definitions for a category",
+      "type": "object",
+      "properties": {
+        "categoryId": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "fields": {
+          "type": "array",
+          "description": "Ordered specification field descriptors"
+        }
+      },
+      "required": ["categoryId", "fields"]
+    },
+    "Discount": {
+      "title": "Discount",
+      "description": "Promotional code or automatic discount rule",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^[A-Z0-9\\-_]+$"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["percent", "fixed_kobo"]
+        },
+        "value": {
+          "type": "number",
+          "description": "Basis points for percent (1000 = 10%) or integer kobo for fixed_kobo"
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["cart", "category", "product"]
+        },
+        "minSubtotalKobo": {
+          "type": "number"
+        },
+        "usedCount": {
+          "type": "number"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "required": ["type", "value", "scope", "minSubtotalKobo", "usedCount", "active"]
+    },
+    "SettingDoc": {
+      "title": "SettingDoc",
+      "description": "Site, theme, and policy configuration documents",
+      "type": "object",
+      "properties": {
+        "updatedAt": {
+          "type": "string",
+          "maxLength": 64
+        }
+      }
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer checkout order record",
+      "type": "object",
+      "properties": {
+        "orderRef": {
+          "type": "string",
+          "maxLength": 20,
+          "pattern": "^IR-[A-Z0-9]{6}$"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending_payment",
+            "paid",
+            "pending_whatsapp",
+            "confirmed",
+            "fulfilled",
+            "cancelled",
+            "refunded"
+          ]
+        },
+        "channel": {
+          "type": "string",
+          "enum": ["paystack", "whatsapp"]
+        },
+        "subtotalKobo": {
+          "type": "number"
+        },
+        "discountKobo": {
+          "type": "number"
+        },
+        "deliveryKobo": {
+          "type": "number"
+        },
+        "vatKobo": {
+          "type": "number"
+        },
+        "totalKobo": {
+          "type": "number"
+        },
+        "deliveryZoneId": {
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "orderRef",
+        "status",
+        "channel",
+        "subtotalKobo",
+        "discountKobo",
+        "deliveryKobo",
+        "vatKobo",
+        "totalKobo",
+        "deliveryZoneId"
+      ]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "B2B, School, Delivery, or International quote inquiry",
+      "type": "object",
+      "properties": {
+        "segment": {
+          "type": "string",
+          "enum": ["schools", "bulk", "delivery", "international"]
+        },
+        "organizationName": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "contactName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "requirements": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "createdAt": {
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "required": ["segment", "contactName", "phone", "requirements", "createdAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable admin action audit trail",
+      "type": "object",
+      "properties": {
+        "actorUid": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "action": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "targetPath": {
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "required": ["actorUid", "role", "action", "targetPath"]
+    }
+  },
+  "firestore": {
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Product categories readable publicly when visible, writable by admins"
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Catalog products readable publicly when published, writable by admins"
+    },
+    "/specSchemas/{categoryId}": {
+      "schema": { "$ref": "#/entities/SpecSchema" },
+      "description": "Category specification schemas readable publicly, writable by admins"
+    },
+    "/discounts/{discountId}": {
+      "schema": { "$ref": "#/entities/Discount" },
+      "description": "Discount rules readable when active, writable by admins"
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/SettingDoc" },
+      "description": "Public site, theme, and policy settings, writable by admins"
+    },
+    "/orders/{orderRef}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Customer orders (contains PII; not publicly listable, accessible only via verified lookup or admin)"
+    },
+    "/leads/{leadId}": {
+      "schema": { "$ref": "#/entities/Lead" },
+      "description": "Segment inquiry leads (write-only for public lead submission, readable by admins)"
+    },
+    "/auditLog/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Admin write audit log"
+    },
+    "/admins/{adminUid}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Admin role directory"
+    }
+  }
+}

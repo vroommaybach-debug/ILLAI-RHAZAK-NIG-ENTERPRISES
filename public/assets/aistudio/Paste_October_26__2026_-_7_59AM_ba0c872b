@@ -1,0 +1,419 @@
+# ILLAI-RHASAK Nig. Enterprises: Master Architecture and Build Prompt
+
+Use this document in two ways. First, paste Part A (the master brief) at the start of a Google AI Studio session so the model understands the whole project. Second, paste each Phase prompt in Part C one at a time, in order, only after the previous phase passes its acceptance checks.
+
+---
+
+## PART A: MASTER BRIEF (paste first, every session)
+
+### A1. Project identity
+
+- Client: ILLAI-RHASAK NIG. ENTERPRISES (legal name as shown on shopfront signage). Logo wordmark reads "ILLAI-RHASAK NIG. ENTERPRISE."
+- Location: Ikeja, Lagos, Nigeria.
+- Primary WhatsApp (international format, no plus sign for wa.me links): 2349046453977. Display as 0904 645 3977.
+- Email: illairhasakng@gmail.com
+- Products: laptops, desktops, printers, scanners. All products are sold brand new. Warranty is attached to each individual product sold, set per product, not granted by the brand as a whole.
+- Markets: retail (individuals), education (schools, colleges, training centres, often bulk and term-based), bulk and corporate, delivery within Lagos, delivery across Nigeria, and international shipping.
+- Currency: Nigerian Naira (NGN). All displayed prices are VAT inclusive at 7.5%. VAT is shown as a breakdown line (VAT component inside the price), never added on top.
+- Payments: Paystack for online card and bank payments (client account setup is pending and must be treated as a configuration step). WhatsApp order path for everyone who prefers to order by chat.
+
+### A2. Product vision
+
+This is not a template store and not a landing page. It is an immersive, cinematic commerce experience that makes a buyer of a high-value machine feel they are dealing with a serious, professional brand. The tone is youthful and pop in its motion and color, and very professional in its information, trust signals, and clarity. The design must never look cluttered, overcrowded, or like a generic WordPress shop.
+
+Design principles:
+1. Clarity over cleverness. Every screen answers: what is this, what does it cost, is it covered, how do I get it.
+2. Cinematic pacing. Scroll-driven reveals, one dominant idea per viewport, generous negative space.
+3. Youthful, not childish. Bold display type, gradient light, gem-like accents, playful micro-interactions, never noisy.
+4. Trust first. Brand new, warranty, returns, and delivery terms are visible without hunting.
+5. Speed is a feature. Premium buyers judge a store by how fast it responds.
+
+### A3. Brand system
+
+Palette (CSS custom properties, exposed through the CMS theme tokens):
+- Background (ink): #05070D
+- Surface: #0A0E18 and #0F1524
+- Text: #F4F6FB; muted text: #9AA3B8
+- Primary blue: #2563FF; highlight blue: #38BDF8
+- Signal red: #EF2B3A
+- Accent gold: #F5B93A (used sparingly, for tags and eyebrows)
+- Hairline: rgba(255,255,255,0.09)
+
+Typography:
+- Display: Space Grotesk (500, 700)
+- Body: Inter (400, 500, 600)
+- Type scale uses clamp() with fluid sizes. Display headings use tight tracking (-0.02em to -0.04em) and line-height near 1.0.
+
+Shape and motion:
+- Radius: 22px for cards, pill (999px) for buttons.
+- Grain overlay at roughly 6% opacity, animated at low frequency.
+- Gradient gem mark (conic blue ring with a red-and-blue faceted core) as the logo symbol.
+- Easing: power3.out and power4.out for entrances, power2.inOut for morphs, never linear except for marquees.
+
+Motion budget (enforced in code):
+- Max 3 simultaneous scroll-triggered animations per viewport.
+- All motion must respect prefers-reduced-motion by falling back to opacity-only fades.
+
+### A4. Technology stack (mandatory)
+
+Google AI Studio generates React applications. Build with this stack exactly so it deploys cleanly to Vercel from GitHub:
+
+- Vite + React 18 + TypeScript (strict mode)
+- Tailwind CSS v3 for utilities; CSS custom properties for theme tokens
+- GSAP 3 with the ScrollTrigger plugin (install via npm, do not load from a CDN inside the app)
+- Zustand for client state (cart, UI), with persistence middleware to localStorage
+- React Router v6 for routing
+- Firebase v10 modular SDK: Auth, Firestore, Storage
+- Paystack via server-side initialization and verification (never expose the secret key to the browser)
+- Vercel Serverless Functions in /api for all server-only work (Paystack init, Paystack verify, Paystack webhook, price and discount recalculation, admin claim assignment helper)
+- Zod for validating all input on both client and server
+- Vitest and React Testing Library for unit tests of pricing, cart, and discount logic
+- Playwright for end-to-end checkout smoke tests
+
+Repository layout:
+
+```
+/api                  Vercel serverless functions (server-only)
+/src
+  /app                App shell, router, providers
+  /components         Reusable UI (buttons, cards, spec table, footer)
+  /features
+    /catalog          Category, product list, filters
+    /product          Product page, gallery, spec card
+    /cart             Cart store, drawer, totals
+    /checkout         Checkout form, Paystack, WhatsApp path
+    /segments         Schools, bulk, delivery, international landing pages
+    /policies         Policy pages (privacy, terms, returns, warranty, shipping, cookies)
+    /admin            Passcode gate, Assets module, CMS module
+  /lib
+    firebase.ts       Client SDK init (env-driven)
+    money.ts          Kobo math, VAT breakdown, NGN formatting
+    pricing.ts        Pure pricing functions shared by client and tests
+    whatsapp.ts       wa.me link builders
+    theme.ts          Applies CMS theme tokens as CSS variables
+    motion.ts         GSAP helpers, reduced-motion guard
+  /styles             Global CSS, tokens
+  /types              Shared TypeScript types (Product, Spec, Discount, Order, ThemeSettings)
+/tests                Unit and e2e tests
+firestore.rules
+storage.rules
+firebase.json
+vercel.json
+.env.example
+```
+
+Environment variables (set in Vercel and locally, never committed):
+- VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN, VITE_FIREBASE_PROJECT_ID, VITE_FIREBASE_STORAGE_BUCKET, VITE_FIREBASE_APP_ID (public web config, safe in the client)
+- VITE_PAYSTACK_PUBLIC_KEY (public key only)
+- PAYSTACK_SECRET_KEY (server only)
+- FIREBASE_SERVICE_ACCOUNT_JSON (server only, for Admin SDK in /api)
+- PUBLIC_SITE_URL
+- WHATSAPP_NUMBER=2349046453977
+
+### A5. Data model (Firestore)
+
+All money values are integers in kobo (1 NGN = 100 kobo). Never store floats for money.
+
+Collections:
+
+`categories/{categoryId}`
+- slug (string, unique), name, description, heroImage (storage path), order (number), visible (boolean), themeOverride (optional object)
+
+`products/{productId}`
+- slug (string, unique), name, brand, categoryId, status ("draft" | "published" | "archived")
+- priceKobo (int, VAT inclusive), compareAtKobo (int, optional, shows as strike-through)
+- stockQty (int), stockStatus (derived: "in_stock" | "low" | "out")
+- warrantyMonths (int), warrantyTerms (string, per product)
+- shortDescription, longDescription (rich text, sanitized)
+- images (array of { path, alt, width, height, order })
+- specs (map keyed by spec field id, values typed per the category schema)
+- tags (array of strings), audienceTags (array: "retail" | "education" | "bulk")
+- createdAt, updatedAt, updatedBy
+
+`specSchemas/{categoryId}`
+- fields (ordered array of { id, label, type: "text" | "number" | "boolean" | "list", unit?, required, group })
+- Laptops example fields: processor, ramGb, storageGb, storageType, display, graphics, battery, ports, os, weightKg, warranty
+- Printers example fields: printType, colorMode, maxPaperSize, printSpeedPpm, connectivity, duplex, tonerOrInk
+- Scanners example fields: scanType, dpi, sheetFeeder, dutyCycle, connectivity
+
+`discounts/{discountId}`
+- code (string, optional, uppercase, unique when present)
+- type ("percent" | "fixed_kobo")
+- value (number; basis points for percent, e.g. 1000 = 10%)
+- scope ("cart" | "category" | "product")
+- scopeIds (array)
+- minSubtotalKobo (int)
+- maxUses (int, optional), usedCount (int)
+- startsAt, endsAt (timestamps)
+- active (boolean), audienceTags (optional)
+
+`settings/theme` (CMS tier)
+- colors (map of token names to hex)
+- typography (fontDisplay, fontBody, scale, weights)
+- spacing (scale base, section padding)
+- layout (containerWidthPx, radiusPx)
+- motion (level: "off" | "subtle" | "full")
+- filters (grainOpacity, blurIntensity)
+- version (number)
+
+`settings/site` (CMS tier and assets tier)
+- tier ("assets" | "cms")
+- businessName, whatsappNumber, email, address, hours
+- vatRate (0.075), currency ("NGN")
+- deliveryZones (array of { id, label, feeKobo, etaDays, notes })
+- segmentCopy (object keyed by segment id)
+- footerCopy, announcementBar (optional)
+
+`orders/{orderRef}` (ref format: IR-XXXXXX, 6 characters from an unambiguous alphabet)
+- status ("pending_payment" | "paid" | "pending_whatsapp" | "confirmed" | "fulfilled" | "cancelled" | "refunded")
+- channel ("paystack" | "whatsapp")
+- items (array of { productId, nameSnapshot, unitPriceKobo, qty, lineTotalKobo })
+- subtotalKobo, discountKobo, deliveryKobo, vatKobo (informational breakdown), totalKobo
+- discountCode (optional), deliveryZoneId, customer { name, phone, email, address, state, country }
+- paystackReference (optional), createdAt, updatedAt
+- Customers do not need an account. Orders are reachable via reference plus contact.
+
+`carts` are not stored in Firestore for guests. The cart lives in Zustand with localStorage persistence. The server recalculates everything at checkout.
+
+`admins` is not a collection. Admin authority lives in Firebase Auth custom claims: { role: "assets" | "cms" | "owner" }.
+
+### A6. Pricing and money rules
+
+- Price is stored VAT inclusive. VAT component for display: vatKobo = round(priceKobo - priceKobo / (1 + vatRate)).
+- Line total = unitPriceKobo * qty. No float math anywhere.
+- Discounts apply in this order: product-level, then category-level, then cart-level. Percent discounts round down to the nearest kobo. Fixed discounts never exceed the eligible subtotal.
+- A discount is valid only if: active, within the date window, below maxUses, meets minSubtotalKobo, and matches scope and audience.
+- The server (/api/price) is the source of truth for totals. The client displays the server response and never trusts its own numbers at checkout.
+- Delivery fee comes from settings.deliveryZones. Pickup at Ikeja is a zone with feeKobo 0.
+- Display format: en-NG currency, no decimals for whole naira, two decimals only when kobo is non-zero.
+
+### A7. Cart behavior
+
+- Zustand store with persist middleware, key "ir-cart-v1". Stores: items (productId, qty, addedAt), discountCode, deliveryZoneId, sessionId (anonymous UUID generated once).
+- Adding an item: clamps qty to stockQty. Shows a toast if clamped.
+- Cart drawer slides in with spring-like easing. Quantity changes trigger a debounced call to /api/price (250 ms). Totals animate with a rolling counter.
+- Stale-item handling: if a product is archived or out of stock at price time, the line is marked and the user is told before checkout.
+- Discount code entry calls /api/price with the code; the response includes applied amount and a human reason string.
+- The cart is never the source of truth. Refreshing the page re-fetches prices.
+
+### A8. Checkout flow
+
+Two channels, both presented equally with clear labels:
+
+1. Pay online (Paystack)
+   - Step 1: customer details (name, phone, email, delivery state, address)
+   - Step 2: /api/order/create validates the cart, recalculates with /api/price logic, creates an order doc in "pending_payment", and calls Paystack initialize with amount in kobo and metadata.orderRef.
+   - Step 3: redirect or inline Paystack popup. On success callback, client calls /api/order/verify with the reference.
+   - Step 4: /api/order/verify calls Paystack verify, checks status, amount matches totalKobo exactly, currency is NGN, then sets order to "paid" using the Admin SDK.
+   - Paystack webhook /api/paystack/webhook validates the x-paystack-signature header (HMAC SHA512 of raw body with PAYSTACK_SECRET_KEY), then performs the same verification, idempotently.
+   - Never mark an order paid from the client alone.
+
+2. Order on WhatsApp
+   - Same details form, then /api/order/create with channel "whatsapp" creates the order as "pending_whatsapp".
+   - The client opens wa.me/2349046453977 with a prefilled message: order reference, itemized list with qty and kobo-converted naira totals, delivery zone, and customer name.
+   - Admin sees pending WhatsApp orders in the Assets module and marks them confirmed or cancelled.
+
+Both paths end on /order/:ref with a receipt (status, items, VAT breakdown, delivery zone, warranty summary per item).
+
+### A9. Segment landing pages (sales engines)
+
+These are not generic pages. Each segment page is designed around a specific buyer scenario and has its own hero, proof points, offer structure, and single primary CTA. Build each as a config-driven template so copy and offers are editable in CMS.
+
+- /schools: term bundles (for example a computer lab starter kit: laptops, one desktop, one scanner, one printer). Shows bulk tiers, staged delivery, invoicing request form, WhatsApp CTA with education prefilled message. Proof: "Trusted by schools" placeholder slot (client to supply logos).
+- /bulk: volume pricing table (tiered quantities), account request form, corporate invoicing, dedicated contact. CTA: Get a bulk price.
+- /delivery: Lagos delivery zones, pickup in Ikeja, nationwide delivery zones with fees and ETA notes, international shipping request form. Honest copy: fees and ETAs come from settings, never invented.
+- /international: shipping request form (country, product list, approximate quantities), quote on request via WhatsApp or email.
+
+Each segment page includes the same trust strip: brand new, warranty per product, returns policy link.
+
+### A10. Homepage (locked direction, already drafted)
+
+Sections in order: hero with intro animation, category marquee, four categories with tilt-on-hover, five audience paths (schools, bulk, Lagos, nationwide, international) each with its own CTA, sample spec card with scroll-built rows, warranty promise (brand new, per-product warranty, published returns), CTA band, cinematic footer with large wordmark and "Imagined by June Studio" credit.
+
+Homepage data is sourced from settings and CMS content, so the same layout runs with real products once the catalogue is loaded. Replace all sample values through data, never hardcode.
+
+### A11. Policies and legal content
+
+Routes: /policies/privacy, /policies/terms, /policies/returns, /policies/warranty, /policies/shipping, /policies/cookies.
+
+Rules:
+- Content is stored in Firestore (settings/policies) and editable in CMS. Ship with clearly marked draft text that the client must review.
+- Warranty policy must state that warranty is attached to each product, what it covers, what voids it, and how claims are made. Do not invent manufacturer names or durations; read warrantyMonths from each product.
+- Returns policy must be explicit about brand-new-only sales, condition required for returns, and timelines left as editable fields.
+- Footer links to all of the above.
+
+### A12. Admin
+
+Access: /admin route. Sign-in with Firebase Auth email and password. Users must also enter a passcode for a second factor, verified server-side by /api/admin/passcode (constant-time comparison against a salted hash stored in environment or Firestore admin-only doc). Never check passcodes in the browser.
+
+Authorization: Firestore security rules and Storage rules check request.auth.token.role. Role is assigned by an owner-only server function (/api/admin/grant) using the Admin SDK. Clients cannot self-assign roles.
+
+Two modules, controlled by settings.site.tier:
+
+Assets module (available to role "assets" and "owner"):
+- Products: create, edit, duplicate, archive, publish. Image upload to Storage with client-side resize to max 2000px and WebP conversion, plus server rule enforcing content type image/* and size under 8 MB.
+- Specs: entered against the category's spec schema. Required fields enforced by Zod. Units shown in the UI.
+- Categories: order, visibility, hero image.
+- Discounts: create codes and automatic discounts, set scope, dates, minimums, caps.
+- Orders: view, filter by channel and status, mark WhatsApp orders confirmed or cancelled, add notes.
+- Bulk CSV import for products with a downloadable template and row-level validation errors.
+
+CMS module (available only when tier is "cms" and role is "cms" or "owner"):
+- Theme editor: color tokens with hex input and live preview, typography pairing from an approved list, container width, radius, spacing scale, motion level, grain and blur intensity. Saves to settings/theme with a version bump. The app listens to the theme doc and applies CSS variables live.
+- Copy editor: every text block on the homepage and segment pages is registered in a content map with a key, default value, and optional override. Editors change overrides, never code.
+- Section manager: order and visibility of homepage sections (not arbitrary layout building, which is out of scope for the middle tier).
+- Policies editor: rich text with sanitization.
+- Announcement bar: text, link, enabled, schedule.
+
+Tier rules:
+- Tier "assets": CMS routes return 404 and the CMS nav item is hidden. Theme tokens still apply from the default theme file, not editable.
+- Tier "cms": full access. Upgrade from assets to cms is a single settings change by the owner, with no redeploy.
+- Middle tier (recommended for negotiation): assets plus theme tokens only (colors, type pairing, width, radius, motion level), with copy and section manager disabled. Implement by feature flags: theme.enabled, copy.enabled, sections.enabled.
+
+### A13. Security requirements (non-negotiable)
+
+- No secret keys in the client bundle. Only VITE_ prefixed public config.
+- Firestore rules: products, categories, settings, and discounts are readable publicly where published or public; writable only by admins with the correct role. orders are not publicly readable; a reference lookup goes through /api/order/lookup which requires the reference plus the phone number used at checkout.
+- Storage rules: public read for product images; write restricted to admins; content type and size validation.
+- Rate limiting on /api/price, /api/order/create, and /api/order/lookup (per IP, via Vercel KV or an in-memory fallback in dev).
+- Input validation with Zod on every API route. Reject unknown fields.
+- Paystack webhook signature verification is mandatory. Idempotency keyed on Paystack reference.
+- Sanitize all rich text (DOMPurify on the server side at save time, and escape on render).
+- CSP headers in vercel.json. Restrict script sources to self and the Firebase, Paystack, and Google Fonts hosts.
+- Audit log: every admin write records actor uid, role, timestamp, and before/after hash in an auditLog collection (write-only from server).
+- Never log customer phone or email in server logs.
+
+### A14. Performance and quality budgets
+
+- LCP under 2.5 s on mid-range Android over 4G (Lighthouse mobile). Hero image preloaded, fonts with font-display swap and preconnect.
+- CLS under 0.1. Reserve image aspect ratios.
+- JS for the homepage under 200 KB gzipped. Route-level code splitting; GSAP loaded per route that uses it.
+- Accessibility: WCAG 2.2 AA. Visible focus states, keyboard support for the cart drawer (focus trap, Escape to close), alt text required on product images, color contrast checked for muted text (#9AA3B8 on #05070D passes AA for normal text).
+- Reduced motion respected everywhere.
+- SEO: unique title and description per page, Product JSON-LD on product pages, LocalBusiness JSON-LD on the homepage (name, address Ikeja Lagos, telephone, email), sitemap.xml and robots.txt generated at build.
+
+### A15. Working rules for the AI builder
+
+1. Build one phase at a time. Do not generate future phases early.
+2. Before writing code for a phase, list the files you will create or change and the acceptance checks.
+3. Keep all money logic in lib/money.ts and lib/pricing.ts with unit tests. Keep UI free of arithmetic.
+4. Never hardcode business copy, prices, or contact details in components. Read from settings or the content map.
+5. Every API route validates input with Zod, returns typed errors, and is covered by at least one test.
+6. When a requirement is ambiguous, implement the safer option and add a TODO with the question in a single file, DECISIONS.md.
+7. Produce working code that runs with npm run dev and npm run build with zero type errors before ending a phase.
+8. Summarize at the end of each phase: what changed, what passes, what is still a placeholder.
+
+---
+
+## PART B: PHASE PLAN
+
+| Phase | Scope | Exit criteria |
+|---|---|---|
+| 0 Foundation | Repo, Vite/React/TS, Tailwind, Firebase init, env, routing shell, Vercel config, CI build | npm run build passes; empty shell deploys to Vercel preview |
+| 1 Design system | Tokens, typography, buttons, cards, grain, nav, footer, motion helpers | Storybook-style sample route renders all components; reduced-motion test passes |
+| 2 Homepage | Full homepage per A10 with data-driven sections and placeholder product images | Lighthouse mobile LCP under 2.5 s; all CTAs produce correct WhatsApp links |
+| 3 Catalog and product | Category pages, filters, product page, spec card from schema, image gallery | Product renders from Firestore seed data; spec card matches schema order |
+| 4 Money and cart | money.ts, pricing.ts, cart store, drawer, /api/price, discounts | Unit tests for kobo math, VAT breakdown, discount rules, cart clamping pass |
+| 5 Checkout | Order create, Paystack init, verify, webhook, WhatsApp path, order receipt | Test-mode Paystack payment marks order paid; webhook replay is idempotent; WhatsApp link correct |
+| 6 Segments and policies | /schools, /bulk, /delivery, /international, policy pages, footer links | All pages reachable from nav and footer; forms create lead docs |
+| 7 Admin foundation | Passcode gate, Firebase Auth, role claims, rules, audit log | Non-admin cannot read admin routes or write Firestore; passcode checked server-side |
+| 8 Assets module | Products, images, specs, categories, discounts, orders, CSV import | Full product lifecycle works end-to-end; uploads validated |
+| 9 CMS module | Theme editor, copy overrides, section manager, policies editor, tier flag | Theme changes apply live; assets tier hides CMS fully |
+| 10 Hardening | e2e checkout tests, a11y audit, SEO, CSP, rate limits, performance pass | All budgets in A14 met; e2e suite green |
+| 11 Launch | Production env, Paystack live keys, domain, monitoring, handover docs | Live test order completes; handover pack delivered |
+
+---
+
+## PART C: PHASE PROMPTS (paste one at a time)
+
+### Phase 0 prompt
+
+Read Part A of the master brief. Build Phase 0 only.
+Create the repository skeleton per A4 with Vite, React 18, TypeScript strict, Tailwind v3, React Router, Zustand, Zod, Firebase v10 init in src/lib/firebase.ts that reads VITE_ env vars and fails loudly in dev if any are missing, and a placeholder App shell with routes for /, /shop, /product/:slug, /cart, /checkout, /order/:ref, /admin, and policy routes, each rendering its name for now.
+Add vercel.json with SPA rewrites and security headers per A13 (CSP can be permissive for now but must be tightened in Phase 10).
+Add .env.example per A4 with every key and no values.
+Add a GitHub Actions workflow that runs npm ci, npm run typecheck, npm run build.
+Exit: npm run dev and npm run build succeed with zero errors. List every file created.
+
+### Phase 1 prompt
+
+Build the design system per A3 and A2. Implement tokens as CSS custom properties in src/styles/tokens.css with a theme.ts that can override them at runtime from a theme object. Create components: Button (primary, ghost, pill sizes), Eyebrow, Section wrapper with fluid padding, Card, Tag, Nav (sticky, blurred, with WhatsApp CTA using whatsapp.ts), Footer shell (wordmark slot, columns from settings, June Studio credit), GrainOverlay, GemMark (CSS conic gradient animation), Marquee. Add motion.ts with a reduced-motion guard and a helper to register ScrollTrigger once.
+Add a /styleguide route that shows every component.
+Exit: all components render on /styleguide; reduced-motion disables all animations in a test.
+
+### Phase 2 prompt
+
+Build the homepage per A10 as a data-driven page. Pull section content from a content map (src/content/home.ts) that is later overridable by settings. Include the hero intro timeline, scroll-driven orb parallax, category cards with tilt, audience paths with the exact WhatsApp prefilled messages from the current draft, the spec card with scroll-built rows (sample data, sourced from content map), the warranty section, the CTA band, and the cinematic footer.
+Add LocalBusiness JSON-LD. Use real image slots that accept URLs and fall back to the gradient stage when no image exists.
+Exit: Lighthouse mobile performance over 85 on the preview; every CTA link verified against whatsapp.ts output.
+
+### Phase 3 prompt
+
+Build the catalog, product page, and spec card. Seed Firestore with 6 sample products (2 laptops, 1 desktop, 1 printer, 1 scanner, 1 extra laptop) using dummy but realistic specs, clearly marked seed=true. Category page supports filters for brand, price range (kobo), and spec fields from the schema, with URL-synced filters. Product page shows gallery with keyboard navigation, VAT breakdown line, stock status, warranty from warrantyMonths and warrantyTerms, add to cart button, and order on WhatsApp button. Add Product JSON-LD.
+Exit: all filters work with URL sync; schema-driven spec table renders in schema order.
+
+### Phase 4 prompt
+
+Implement money.ts, pricing.ts, and the cart. money.ts handles kobo, naira formatting, and VAT breakdown. pricing.ts is pure: given products snapshot, cart items, discount code, and delivery zone, it returns line items, subtotal, discount applied with reason, delivery, VAT info, and total. Write Vitest tests covering rounding, percent vs fixed discounts, minimum spend, expiry, usage caps, scope, and quantity clamping.
+Implement the cart Zustand store with persistence and the drawer UI with rolling totals. Implement /api/price as a Vercel function that loads products and discounts via Admin SDK, runs the same pricing.ts, and returns the result. Add Zod validation and rate limiting.
+Exit: tests green; cart totals from the server match the client display for 20 random scenarios in a test.
+
+### Phase 5 prompt
+
+Implement checkout. /api/order/create validates, recalculates via pricing, writes an order doc, and branches by channel. For paystack, call Paystack initialize with amount in kobo and metadata orderRef. /api/order/verify and /api/paystack/webhook verify signature and amount, and are idempotent. For whatsapp, build the wa.me message per whatsapp.ts with the order reference and itemized totals. Build the /order/:ref receipt with lookup protection per A13.
+Exit: Paystack test-mode payment marks order paid; replayed webhook changes nothing; WhatsApp link decodes to the correct message in a test.
+
+### Phase 6 prompt
+
+Build /schools, /bulk, /delivery, /international as config-driven templates per A9 with their own copy, proof slots, forms that write to a leads collection, and a single primary CTA each. Build all policy pages from settings/policies with draft text marked DRAFT - CLIENT REVIEW REQUIRED. Wire nav and footer.
+Exit: all routes reachable; lead forms create docs; no invented fees or timelines appear anywhere.
+
+### Phase 7 prompt
+
+Build admin foundation per A12. /admin shows sign-in, then passcode step calling /api/admin/passcode. /api/admin/grant is owner-only and sets custom claims. Firestore and Storage rules enforce roles. Audit log on every admin write.
+Exit: test proves a signed-in non-admin cannot read admin data or write any collection; passcode is never checked in the browser.
+
+### Phase 8 prompt
+
+Build the Assets module per A12: product CRUD with image upload (client resize to WebP, server rule validation), spec entry from schema with Zod, categories, discounts, orders management, WhatsApp order confirmation, and CSV import with row-level errors.
+Exit: create, publish, price, discount, and order flows work end-to-end on the emulator.
+
+### Phase 9 prompt
+
+Build the CMS module per A12: theme editor writing settings/theme with versioning and live CSS variable application, copy overrides through the content map, homepage section manager, policies editor with sanitization, announcement bar. Implement tier and feature flags so the assets tier hides and blocks CMS completely.
+Exit: theme change appears on the public site without redeploy; assets tier returns 404 on CMS routes and API.
+
+### Phase 10 prompt
+
+Hardening per A13 and A14: tighten CSP, add rate limits to all public APIs, run axe accessibility checks on all routes, add sitemap and robots generation, add Product and LocalBusiness JSON-LD validation, run Playwright e2e for: browse, add to cart, apply discount, Paystack test checkout, WhatsApp checkout, admin product create, CMS theme change.
+Exit: all budgets met; e2e green; list any open items in DECISIONS.md.
+
+### Phase 11 prompt
+
+Prepare launch: production Firebase project, rules deployed, Vercel production env, custom domain steps, Paystack live key switch checklist, monitoring (Vercel analytics, error logging without PII), and a handover document covering admin usage, how to change prices and discounts, how to upload products, how to edit the theme (CMS tier), and how to support customers.
+Exit: live test order passes; handover pack written.
+
+---
+
+## PART D: OPEN DECISIONS (resolve before the relevant phase)
+
+1. Confirm the client's warranty durations per brand or per product (needed for Phase 3 seed data and Phase 6 policy copy).
+2. Confirm Paystack account status and who completes business verification (needed before Phase 5 live testing).
+3. Confirm delivery zones and fees, and the Lagos pickup address (needed in Phase 6).
+4. Confirm returns windows and conditions (needed in Phase 6 policy copy).
+5. Choose the admin passcode owner and rotation process (Phase 7).
+6. Confirm tier pricing and whether the middle tier (theme tokens without copy or section control) is offered (Phase 9).
+7. Supply real product photography. Until then, generate placeholders in Google AI with the prompts from the homepage handoff and label them as placeholders in the product data.
+8. Confirm whether the client wants a customer account system later. It is out of scope for this build.
+
+---
+
+## PART E: HANDOFF CHECKLIST
+
+- Repository on GitHub with main protected and PR previews on Vercel
+- Firebase staging and production projects with rules deployed
+- Paystack test keys in staging, live keys in production only after sign-off
+- Seed data removed or clearly flagged before launch
+- DECISIONS.md current
+- Admin accounts created by owner, passcode rotated
+- Policies approved by client

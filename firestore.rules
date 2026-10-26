@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primitive Helpers
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidCategory(data) {
+      return data.keys().hasAll(['slug', 'name', 'description', 'order', 'visible']) &&
+             data.slug is string && data.slug.size() >= 1 && data.slug.size() <= 80 &&
+             data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+             data.description is string && data.description.size() <= 500 &&
+             data.order is int &&
+             data.visible is bool;
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll([
+               'slug', 'name', 'brand', 'categoryId', 'status',
+               'priceKobo', 'stockQty', 'stockStatus', 'warrantyMonths',
+               'warrantyTerms', 'shortDescription'
+             ]) &&
+             data.slug is string && data.slug.size() >= 1 && data.slug.size() <= 120 &&
+             data.name is string && data.name.size() >= 1 && data.name.size() <= 160 &&
+             data.brand is string && data.brand.size() >= 1 && data.brand.size() <= 80 &&
+             data.categoryId is string && data.categoryId.size() >= 1 && data.categoryId.size() <= 64 &&
+             data.status in ['draft', 'published', 'archived'] &&
+             data.priceKobo is int && data.priceKobo >= 0 &&
+             data.stockQty is int && data.stockQty >= 0 &&
+             data.stockStatus in ['in_stock', 'low', 'out'] &&
+             data.warrantyMonths is int && data.warrantyMonths >= 0 &&
+             data.warrantyTerms is string && data.warrantyTerms.size() <= 600 &&
+             data.shortDescription is string && data.shortDescription.size() <= 500;
+    }
+
+    function isValidSpecSchema(data) {
+      return data.keys().hasAll(['categoryId', 'fields']) &&
+             data.categoryId is string && data.categoryId.size() <= 64 &&
+             data.fields is list && data.fields.size() <= 30;
+    }
+
+    function isValidDiscount(data) {
+      return data.keys().hasAll(['type', 'value', 'scope', 'minSubtotalKobo', 'usedCount', 'active']) &&
+             data.type in ['percent', 'fixed_kobo'] &&
+             data.value is int && data.value >= 0 &&
+             data.scope in ['cart', 'category', 'product'] &&
+             data.minSubtotalKobo is int && data.minSubtotalKobo >= 0 &&
+             data.usedCount is int && data.usedCount >= 0 &&
+             data.active is bool;
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['orderRef', 'channel', 'status', 'items', 'subtotalKobo', 'totalKobo', 'customer', 'createdAt']) &&
+             data.orderRef is string && data.orderRef.size() >= 4 && data.orderRef.size() <= 40 &&
+             data.channel in ['paystack', 'whatsapp'] &&
+             data.status in ['pending_payment', 'paid', 'whatsapp_initiated', 'confirmed', 'fulfilled', 'cancelled', 'refunded'] &&
+             data.items is list && data.items.size() >= 1 && data.items.size() <= 50 &&
+             data.subtotalKobo is int && data.subtotalKobo >= 0 &&
+             data.totalKobo is int && data.totalKobo >= 0;
+    }
+
+    function isValidLead(data) {
+      return data.keys().hasAll(['segment', 'contactName', 'phone', 'requirements', 'createdAt']) &&
+             data.segment in ['schools', 'bulk', 'delivery', 'international'] &&
+             data.contactName is string && data.contactName.size() >= 2 && data.contactName.size() <= 120 &&
+             data.phone is string && data.phone.size() >= 5 && data.phone.size() <= 40 &&
+             data.requirements is string && data.requirements.size() >= 2 && data.requirements.size() <= 2000 &&
+             data.createdAt is string && data.createdAt.size() <= 64;
+    }
+
+    // Connection test path
+    match /test/{docId} {
+      allow get: if isValidId(docId);
+    }
+
+    // Categories
+    match /categories/{categoryId} {
+      allow get: if isValidId(categoryId);
+      allow list: if resource.data.visible in [true, false];
+      allow create, update: if isValidId(categoryId) && isValidCategory(incoming());
+      allow delete: if isValidId(categoryId);
+    }
+
+    // Products
+    match /products/{productId} {
+      allow get: if isValidId(productId);
+      allow list: if resource.data.status in ['draft', 'published', 'archived'];
+      allow create, update: if isValidId(productId) && isValidProduct(incoming());
+      allow delete: if isValidId(productId);
+    }
+
+    // Spec Schemas
+    match /specSchemas/{categoryId} {
+      allow get: if isValidId(categoryId);
+      allow list: if resource.data.categoryId is string;
+      allow create, update: if isValidId(categoryId) && isValidSpecSchema(incoming());
+      allow delete: if isValidId(categoryId);
+    }
+
+    // Discounts
+    match /discounts/{discountId} {
+      allow get: if isValidId(discountId);
+      allow list: if resource.data.active in [true, false];
+      allow create, update: if isValidId(discountId) && isValidDiscount(incoming());
+      allow delete: if isValidId(discountId);
+    }
+
+    // Settings (theme, site, policies, content)
+    match /settings/{settingId} {
+      allow get: if isValidId(settingId) && settingId in ['theme', 'site', 'policies', 'content'];
+      allow list: if resource.data != null;
+      allow create, update: if isValidId(settingId) && settingId in ['theme', 'site', 'policies', 'content'];
+      allow delete: if false;
+    }
+
+    // Orders
+    match /orders/{orderRef} {
+      allow get: if isValidId(orderRef);
+      allow list: if resource.data.orderRef is string;
+      allow create, update: if isValidId(orderRef) && isValidOrder(incoming());
+      allow delete: if false;
+    }
+
+    // Leads
+    match /leads/{leadId} {
+      allow get: if isValidId(leadId);
+      allow list: if resource.data.segment in ['schools', 'bulk', 'delivery', 'international'];
+      allow create, update: if isValidId(leadId) && isValidLead(incoming());
+      allow delete: if isValidId(leadId);
+    }
+
+    // Admins directory
+    match /admins/{adminUid} {
+      allow get: if isValidId(adminUid);
+      allow list: if resource.data != null;
+      allow create, update, delete: if isValidId(adminUid);
+    }
+
+    // Audit Log
+    match /auditLog/{logId} {
+      allow get: if isValidId(logId);
+      allow list: if resource.data != null;
+      allow create: if isValidId(logId);
+      allow update, delete: if false;
+    }
+  }
+}

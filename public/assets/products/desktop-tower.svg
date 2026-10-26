@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <radialGradient id="glow3" cx="50%" cy="48%" r="55%">
+      <stop offset="0%" stop-color="#2563FF" stop-opacity="0.34"/>
+      <stop offset="60%" stop-color="#EF2B3A" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#05070D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="#070B14"/>
+  <circle cx="400" cy="285" r="280" fill="url(#glow3)"/>
+  <!-- Monitor -->
+  <rect x="135" y="115" width="350" height="235" rx="12" fill="#0F1524" stroke="#475569" stroke-width="3"/>
+  <rect x="148" y="128" width="324" height="209" rx="6" fill="#0F2454"/>
+  <circle cx="310" cy="232" r="58" fill="#2563FF" fill-opacity="0.3" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="288" y="350" width="44" height="58" fill="#334155"/>
+  <rect x="225" y="408" width="170" height="14" rx="5" fill="#64748B"/>
+  <!-- Workstation Tower -->
+  <rect x="520" y="105" width="150" height="320" rx="14" fill="#0F172A" stroke="#475569" stroke-width="3"/>
+  <rect x="540" y="130" width="110" height="32" rx="6" fill="#1E293B"/>
+  <circle cx="595" cy="188" r="10" fill="#2563FF" stroke="#38BDF8" stroke-width="2"/>
+  <line x1="542" y1="230" x2="648" y2="230" stroke="#334155" stroke-width="3"/>
+  <line x1="542" y1="250" x2="648" y2="250" stroke="#334155" stroke-width="3"/>
+  <line x1="542" y1="270" x2="648" y2="270" stroke="#334155" stroke-width="3"/>
+  <rect x="542" y="305" width="106" height="95" rx="8" fill="#090D16" stroke="#2563FF" stroke-opacity="0.5"/>
+</svg>

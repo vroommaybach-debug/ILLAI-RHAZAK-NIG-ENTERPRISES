@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <radialGradient id="glow1" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#2563FF" stop-opacity="0.38"/>
+      <stop offset="55%" stop-color="#38BDF8" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#05070D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="screen1" x1="180" y1="120" x2="620" y2="410" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="50%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#090D16"/>
+    </linearGradient>
+    <linearGradient id="chassis" x1="120" y1="415" x2="680" y2="455" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="50%" stop-color="#94A3B8"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="#070B14"/>
+  <circle cx="400" cy="280" r="280" fill="url(#glow1)"/>
+  <ellipse cx="400" cy="465" rx="290" ry="22" fill="#000000" fill-opacity="0.65"/>
+  <!-- Laptop Lid -->
+  <rect x="175" y="115" width="450" height="300" rx="16" fill="#0F1524" stroke="#475569" stroke-width="3"/>
+  <rect x="190" y="130" width="420" height="270" rx="8" fill="url(#screen1)"/>
+  <!-- Screen UI Graphic -->
+  <circle cx="400" cy="265" r="78" stroke="#38BDF8" stroke-opacity="0.4" stroke-width="2"/>
+  <circle cx="400" cy="265" r="46" fill="#2563FF" fill-opacity="0.25" stroke="#F5B93A" stroke-width="1.5"/>
+  <path d="M250 350 H550" stroke="#38BDF8" stroke-opacity="0.3" stroke-width="2"/>
+  <rect x="230" y="160" width="90" height="8" rx="4" fill="#38BDF8" fill-opacity="0.5"/>
+  <rect x="515" y="160" width="55" height="8" rx="4" fill="#EF2B3A" fill-opacity="0.7"/>
+  <!-- Laptop Base -->
+  <path d="M115 415 H685 L660 448 H140 L115 415Z" fill="url(#chassis)"/>
+  <rect x="345" y="415" width="110" height="7" rx="3.5" fill="#0F172A"/>
+</svg>

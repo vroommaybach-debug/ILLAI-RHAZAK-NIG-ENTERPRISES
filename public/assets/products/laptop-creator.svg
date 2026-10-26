@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <radialGradient id="glow6" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#EF2B3A" stop-opacity="0.28"/>
+      <stop offset="50%" stop-color="#2563FF" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#05070D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="screen6" x1="170" y1="115" x2="630" y2="410" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1E1B4B"/>
+      <stop offset="50%" stop-color="#1D4ED8"/>
+      <stop offset="100%" stop-color="#7F1D1D"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="#070B14"/>
+  <circle cx="400" cy="285" r="285" fill="url(#glow6)"/>
+  <ellipse cx="400" cy="468" rx="295" ry="22" fill="#000000" fill-opacity="0.65"/>
+  <rect x="170" y="110" width="460" height="305" rx="16" fill="#0A0E18" stroke="#64748B" stroke-width="3"/>
+  <rect x="184" y="124" width="432" height="277" rx="8" fill="url(#screen6)"/>
+  <polygon points="400,175 470,320 330,320" fill="#38BDF8" fill-opacity="0.22" stroke="#F5B93A" stroke-width="2"/>
+  <circle cx="400" cy="265" r="28" fill="#EF2B3A" fill-opacity="0.5"/>
+  <path d="M110 415 H690 L664 449 H136 L110 415Z" fill="#475569"/>
+  <rect x="345" y="415" width="110" height="7" rx="3.5" fill="#0F172A"/>
+</svg>
