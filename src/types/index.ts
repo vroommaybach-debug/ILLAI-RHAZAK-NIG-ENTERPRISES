@@ -1,7 +1,15 @@
 export type ProductStatus = 'draft' | 'published' | 'archived';
 export type StockStatus = 'in_stock' | 'low' | 'out';
 export type AudienceTag = 'retail' | 'education' | 'bulk';
-export type CategorySlug = 'laptops' | 'desktops' | 'printers' | 'scanners';
+export type CategorySlug =
+  | 'laptops'
+  | 'uk-used'
+  | 'desktops'
+  | 'printers'
+  | 'scanners'
+  | 'photocopiers'
+  | 'ups'
+  | 'consumables';
 
 export interface Category {
   id: string;
@@ -171,8 +179,8 @@ export interface SiteSettings {
   businessName: string;
   legalName: string;
   wordmark: string;
-  whatsappNumber: string; // International format without plus: 2349046453977
-  whatsappDisplay: string; // 0904 645 3977
+  whatsappNumber: string; // International format without plus: 2347061766728
+  whatsappDisplay: string; // 0706 176 6728
   email: string;
   address: string;
   hours: string;
@@ -295,7 +303,7 @@ export interface PolicyDoc {
 
 export interface SegmentLead {
   id: string;
-  segment: 'schools' | 'bulk' | 'delivery' | 'international';
+  segment: 'schools' | 'bulk' | 'delivery' | 'international' | 'servicing';
   organizationName?: string;
   contactName: string;
   phone: string;

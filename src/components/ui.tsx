@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Laptop, Monitor, Printer, ScanLine } from 'lucide-react';
+import {
+  BatteryCharging,
+  Copy,
+  Laptop,
+  Monitor,
+  PackageCheck,
+  Printer,
+  ScanLine,
+} from 'lucide-react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'ghost' | 'signal' | 'gold';
@@ -145,6 +153,12 @@ export const ProductImageStage: React.FC<{
       ? Printer
       : categoryId === 'scanners'
       ? ScanLine
+      : categoryId === 'photocopiers'
+      ? Copy
+      : categoryId === 'ups'
+      ? BatteryCharging
+      : categoryId === 'consumables'
+      ? PackageCheck
       : Laptop;
 
   return (

@@ -102,7 +102,48 @@ interface AppDataContextValue {
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
 
-const LOCAL_CMS_STORAGE_KEY = 'ir-cms-state-v1';
+const LOCAL_CMS_STORAGE_KEY = 'ir-cms-state-v2';
+
+function normalizeSiteSettings(raw?: SiteSettings): SiteSettings {
+  if (!raw) return SEED_SITE_SETTINGS;
+  const isOldNumber =
+    !raw.whatsappNumber ||
+    raw.whatsappNumber.includes('9046453977') ||
+    raw.whatsappDisplay?.includes('904');
+  return {
+    ...SEED_SITE_SETTINGS,
+    ...raw,
+    whatsappNumber: isOldNumber ? '2347061766728' : raw.whatsappNumber,
+    whatsappDisplay: isOldNumber ? '0706 176 6728' : raw.whatsappDisplay,
+    address: 'Computer Village, Ikeja, Lagos, Nigeria',
+  };
+}
+
+function mergeSeedProducts(existing: Product[]): Product[] {
+  const map = new Map<string, Product>();
+  for (const p of existing) {
+    map.set(p.id, p);
+  }
+  for (const seedProd of SEED_PRODUCTS) {
+    if (!map.has(seedProd.id)) {
+      map.set(seedProd.id, seedProd);
+    }
+  }
+  return Array.from(map.values());
+}
+
+function mergeSeedCategories(existing: Category[]): Category[] {
+  const map = new Map<string, Category>();
+  for (const c of existing) {
+    map.set(c.id, c);
+  }
+  for (const seedCat of SEED_CATEGORIES) {
+    if (!map.has(seedCat.id)) {
+      map.set(seedCat.id, seedCat);
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => a.order - b.order);
+}
 
 export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -146,11 +187,11 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
           policies: Record<PolicyDoc['slug'], PolicyDoc>;
           leads: SegmentLead[];
         }>;
-        if (parsed.products?.length) setProducts(parsed.products);
-        if (parsed.categories?.length) setCategories(parsed.categories);
+        if (parsed.products?.length) setProducts(mergeSeedProducts(parsed.products));
+        if (parsed.categories?.length) setCategories(mergeSeedCategories(parsed.categories));
         if (parsed.discounts?.length) setDiscounts(parsed.discounts);
         if (parsed.orders?.length) setOrders(parsed.orders);
-        if (parsed.siteSettings) setSiteSettings(parsed.siteSettings);
+        if (parsed.siteSettings) setSiteSettings(normalizeSiteSettings(parsed.siteSettings));
         if (parsed.themeSettings) {
           setThemeSettings(parsed.themeSettings);
           applyThemeTokens(parsed.themeSettings);
@@ -209,15 +250,43 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
       setAuthReady(true);
     });
 
-    // Live Products listener + auto-seed into Firestore if empty
+    // Live Categories listener + auto-backfill expanded categories
+    const unsubCategories = onSnapshot(
+      collection(db, 'categories'),
+      (snap) => {
+        if (!snap.empty) {
+          const remoteCats = snap.docs.map((d) => d.data() as Category);
+          const mergedCats = mergeSeedCategories(remoteCats);
+          setCategories(mergedCats);
+          const remoteIds = new Set(remoteCats.map((c) => c.id));
+          for (const seedCat of SEED_CATEGORIES) {
+            if (!remoteIds.has(seedCat.id)) {
+              void setDoc(doc(db, 'categories', seedCat.id), seedCat).catch(() => {});
+            }
+          }
+        } else {
+          for (const c of SEED_CATEGORIES) {
+            void setDoc(doc(db, 'categories', c.id), c).catch(() => {});
+          }
+        }
+      },
+      () => {}
+    );
+
+    // Live Products listener + auto-seed into Firestore if empty or missing new category items
     const unsubProducts = onSnapshot(
       collection(db, 'products'),
       (snap) => {
         setFirebaseConnected(true);
         if (!snap.empty) {
-          const list = snap.docs.map((d) => d.data() as Product);
-          if (list.length > 0) {
-            setProducts(list);
+          const remoteList = snap.docs.map((d) => d.data() as Product);
+          const mergedList = mergeSeedProducts(remoteList);
+          setProducts(mergedList);
+          const remoteIds = new Set(remoteList.map((p) => p.id));
+          for (const seedProd of SEED_PRODUCTS) {
+            if (!remoteIds.has(seedProd.id)) {
+              void setDoc(doc(db, 'products', seedProd.id), seedProd).catch(() => {});
+            }
           }
         } else if (!seededRef.current) {
           seededRef.current = true;
@@ -296,8 +365,13 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
       (snap) => {
         if (snap.exists()) {
           const data = snap.data() as SiteSettings;
-          if (data?.wordmark) {
-            setSiteSettings(data);
+          const normalized = normalizeSiteSettings(data);
+          setSiteSettings(normalized);
+          if (
+            data.whatsappNumber !== normalized.whatsappNumber ||
+            data.address !== normalized.address
+          ) {
+            void setDoc(doc(db, 'settings', 'site'), normalized).catch(() => {});
           }
         }
       },
@@ -306,6 +380,7 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return () => {
       unsubAuth();
+      unsubCategories();
       unsubProducts();
       unsubDiscounts();
       unsubOrders();

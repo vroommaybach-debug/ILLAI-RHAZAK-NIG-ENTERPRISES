@@ -184,7 +184,7 @@ export const SEGMENT_CONFIGS: Record<
       {
         label: 'Quote Turnaround',
         value: 'Within 4 Business Hours',
-        detail: 'Direct response via WhatsApp (+234 904 645 3977) or Email',
+        detail: 'Direct response via WhatsApp (+234 706 176 6728) or Email',
       },
     ],
     bundlesOrTiers: [],

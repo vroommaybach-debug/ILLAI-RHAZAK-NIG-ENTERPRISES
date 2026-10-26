@@ -7,17 +7,17 @@ import {
 } from '../types';
 
 export const SEED_SITE_SETTINGS: SiteSettings = {
-  tier: 'cms',
+  tier: 'assets',
   featureFlags: {
-    themeEnabled: true,
-    copyEnabled: true,
-    sectionsEnabled: true,
+    themeEnabled: false,
+    copyEnabled: false,
+    sectionsEnabled: false,
   },
   businessName: 'ILLAI-RHASAK Nig. Enterprises',
   legalName: 'ILLAI-RHASAK NIG. ENTERPRISES',
-  wordmark: 'ILLAI-RHASAK NIG. ENTERPRISE',
-  whatsappNumber: '2349046453977',
-  whatsappDisplay: '0904 645 3977',
+  wordmark: 'ILLAI-RHASAK NIG. ENTERPRISES',
+  whatsappNumber: '2347061766728',
+  whatsappDisplay: '0706 176 6728',
   email: 'illairhasakng@gmail.com',
   address: 'Computer Village, Ikeja, Lagos, Nigeria',
   hours: 'Mon – Sat: 8:30 AM – 6:30 PM WAT',
@@ -26,11 +26,11 @@ export const SEED_SITE_SETTINGS: SiteSettings = {
   deliveryZones: [
     {
       id: 'ikeja-pickup',
-      label: 'Pickup at Ikeja Showroom (Lagos)',
+      label: 'Pickup at Computer Village, Ikeja Showroom (Lagos)',
       region: 'lagos_pickup',
       feeKobo: 0,
       etaDays: 'Same day (Ready in 2 hours)',
-      notes: 'Inspect factory seal and serial number in person at our Ikeja, Lagos showroom.',
+      notes: 'Inspect hardware, serial number, and warranty documentation in person at our Computer Village, Ikeja, Lagos showroom.',
     },
     {
       id: 'lagos-mainland',
@@ -38,7 +38,7 @@ export const SEED_SITE_SETTINGS: SiteSettings = {
       region: 'lagos',
       feeKobo: 1500000, // ₦15,000
       etaDays: 'Same day or Next business day',
-      notes: 'Covers Ikeja, Maryland, Yaba, Surulere, Magodo, Ogba, Festac, and environs.',
+      notes: 'Covers Computer Village, Ikeja, Maryland, Yaba, Surulere, Magodo, Ogba, Festac, and environs.',
     },
     {
       id: 'lagos-island',
@@ -67,20 +67,20 @@ export const SEED_SITE_SETTINGS: SiteSettings = {
   ],
   announcementBar: {
     enabled: true,
-    text: '100% Brand-New Factory Sealed Hardware · Per-Product Serial Warranty · Ikeja Pickup & Nationwide Delivery',
-    linkText: 'Browse Machines',
+    text: 'Brand-New & UK Used Laptops · Photocopiers · UPS · Consumables · General Servicing · Computer Village, Ikeja, Lagos',
+    linkText: 'Browse Full Catalog',
     linkHref: '/shop',
   },
   footerCopy:
-    'Direct suppliers of brand-new laptops, enterprise desktops, laser printers, and commercial document scanners in Ikeja, Lagos. Every machine carries its own verified product warranty and VAT-inclusive NGN invoice.',
+    'Direct suppliers of brand-new and Grade-A UK used laptops, enterprise desktops, laser printers, commercial photocopier machines, document scanners, UPS power backup, original consumables, and general hardware servicing in Computer Village, Ikeja, Lagos.',
 };
 
 export const SEED_CATEGORIES: Category[] = [
   {
     id: 'laptops',
     slug: 'laptops',
-    name: 'Laptops',
-    eyebrow: 'Executive & Education Notebooks',
+    name: 'Brand-New Laptops',
+    eyebrow: 'Factory-Sealed Executive & Lab Notebooks',
     description:
       'Brand-new HP, Dell, and Lenovo business notebooks, creator workstations, and rugged school lab laptops.',
     heroImage: '/assets/products/laptop-pro.svg',
@@ -89,15 +89,27 @@ export const SEED_CATEGORIES: Category[] = [
     visible: true,
   },
   {
+    id: 'uk-used',
+    slug: 'uk-used',
+    name: 'UK Used Laptops',
+    eyebrow: 'Grade-A Direct UK Corporate Imports',
+    description:
+      'Clean, thoroughly tested Grade-A UK used business laptops (HP EliteBook, Dell Latitude, Lenovo ThinkPad) with verified battery health and warranty.',
+    heroImage: '/assets/products/laptop-edu.svg',
+    highlightSpec: 'Grade-A Clean · Core i5 / i7 · Tested Battery & SSD · Warranty Included',
+    order: 2,
+    visible: true,
+  },
+  {
     id: 'desktops',
     slug: 'desktops',
     name: 'Desktops',
     eyebrow: 'Tower Workstations & All-in-Ones',
     description:
-      'Commercial tower desktops and institutional All-in-One systems engineered for continuous office and school lab workloads.',
+      'Commercial tower desktops and institutional All-in-One systems engineered for continuous office and school CBT workloads.',
     heroImage: '/assets/products/desktop-tower.svg',
     highlightSpec: 'Core i5 / i7 Towers · Included Display Options · Dual-Slot Expansion',
-    order: 2,
+    order: 3,
     visible: true,
   },
   {
@@ -109,7 +121,19 @@ export const SEED_CATEGORIES: Category[] = [
       'High-speed duplex network laser printers and ultra-low-cost ink tank multifunction printers for schools and corporate floors.',
     heroImage: '/assets/products/printer-laser.svg',
     highlightSpec: 'Up to 42 PPM · Auto Duplex · Gigabit Ethernet & Wi-Fi',
-    order: 3,
+    order: 4,
+    visible: true,
+  },
+  {
+    id: 'photocopiers',
+    slug: 'photocopiers',
+    name: 'Photocopiers',
+    eyebrow: 'Commercial A3 / A4 Digital Copiers',
+    description:
+      'Heavy-duty Sharp, Canon, and Kyocera digital photocopier machines for business centres, schools, registries, and corporate print rooms.',
+    heroImage: '/assets/products/photocopier-pro.svg',
+    highlightSpec: 'A3 / A4 Duplex · DADF Feeder · Network Print/Copy/Scan · High Yield',
+    order: 5,
     visible: true,
   },
   {
@@ -121,7 +145,31 @@ export const SEED_CATEGORIES: Category[] = [
       'Single-pass duplex sheetfed and flatbed scanners built for registries, banks, hospitals, and exam boards.',
     heroImage: '/assets/products/scanner-duplex.svg',
     highlightSpec: '600–1200 DPI · 80-Sheet ADF · 6,000 Pages/Day Duty Cycle',
-    order: 4,
+    order: 6,
+    visible: true,
+  },
+  {
+    id: 'ups',
+    slug: 'ups',
+    name: 'UPS & Power Backup',
+    eyebrow: 'Line-Interactive & Pure Sine Wave UPS',
+    description:
+      'Reliable APC, BlueGate, and Mercury UPS units and voltage stabilizers protecting workstations, printers, and servers against power surges.',
+    heroImage: '/assets/products/ups-power.svg',
+    highlightSpec: '650VA – 3000VA · AVR Surge Protection · Pure Sine Wave Options',
+    order: 7,
+    visible: true,
+  },
+  {
+    id: 'consumables',
+    slug: 'consumables',
+    name: 'Consumables & Extras',
+    eyebrow: 'Toners, Drums, Ink, Chargers & Maintenance Kits',
+    description:
+      'Original laser toners, copier drum units, fuser maintenance kits, Refill inks, NVMe SSD/RAM upgrades, and laptop power adapters.',
+    heroImage: '/assets/products/consumables-kit.svg',
+    highlightSpec: 'Original HP/Canon/Sharp Toners · Drum Kits · SSD/RAM · Adapters',
+    order: 8,
     visible: true,
   },
 ];
@@ -140,6 +188,21 @@ export const SEED_SPEC_SCHEMAS: Record<string, SpecSchema> = {
       { id: 'ports', label: 'I/O & Connectivity', type: 'text', required: true, group: 'Chassis' },
       { id: 'os', label: 'Operating System', type: 'text', required: true, group: 'Software' },
       { id: 'weightKg', label: 'Weight', type: 'number', unit: 'kg', required: true, group: 'Chassis' },
+      { id: 'warranty', label: 'Product Warranty', type: 'text', required: true, group: 'Coverage' },
+    ],
+  },
+  'uk-used': {
+    categoryId: 'uk-used',
+    fields: [
+      { id: 'conditionGrade', label: 'Condition Grade', type: 'text', required: true, group: 'Grading', filterable: true },
+      { id: 'processor', label: 'Processor', type: 'text', required: true, group: 'Compute', filterable: true },
+      { id: 'ramGb', label: 'Memory (RAM)', type: 'number', unit: 'GB', required: true, group: 'Compute', filterable: true },
+      { id: 'storageGb', label: 'Storage Capacity', type: 'number', unit: 'GB', required: true, group: 'Storage', filterable: true },
+      { id: 'storageType', label: 'Storage Type', type: 'text', required: true, group: 'Storage' },
+      { id: 'display', label: 'Display Panel', type: 'text', required: true, group: 'Display' },
+      { id: 'battery', label: 'Tested Battery Health', type: 'text', required: true, group: 'Diagnostics' },
+      { id: 'ports', label: 'I/O & Connectivity', type: 'text', required: true, group: 'Chassis' },
+      { id: 'os', label: 'Operating System', type: 'text', required: true, group: 'Software' },
       { id: 'warranty', label: 'Product Warranty', type: 'text', required: true, group: 'Coverage' },
     ],
   },
@@ -169,6 +232,18 @@ export const SEED_SPEC_SCHEMAS: Record<string, SpecSchema> = {
       { id: 'tonerOrInk', label: 'Cartridge / Ink Family', type: 'text', required: true, group: 'Consumables' },
     ],
   },
+  photocopiers: {
+    categoryId: 'photocopiers',
+    fields: [
+      { id: 'maxPaperSize', label: 'Supported Paper Sizes', type: 'text', required: true, group: 'Engine', filterable: true },
+      { id: 'copySpeedPpm', label: 'Copy / Print Speed', type: 'number', unit: 'ppm', required: true, group: 'Engine' },
+      { id: 'functions', label: 'Multifunction Capabilities', type: 'text', required: true, group: 'Engine' },
+      { id: 'feederAndTrays', label: 'DADF & Paper Tray Capacity', type: 'text', required: true, group: 'Paper Handling' },
+      { id: 'tonerYield', label: 'Toner & Drum Yield', type: 'text', required: true, group: 'Consumables' },
+      { id: 'connectivity', label: 'Network & Host Interface', type: 'text', required: true, group: 'Connectivity' },
+      { id: 'warranty', label: 'Service & Hardware Warranty', type: 'text', required: true, group: 'Coverage' },
+    ],
+  },
   scanners: {
     categoryId: 'scanners',
     fields: [
@@ -179,12 +254,27 @@ export const SEED_SPEC_SCHEMAS: Record<string, SpecSchema> = {
       { id: 'connectivity', label: 'Host Interface', type: 'text', required: true, group: 'Connectivity' },
     ],
   },
+  ups: {
+    categoryId: 'ups',
+    fields: [
+      { id: 'capacityVa', label: 'Apparent Power Rating', type: 'text', required: true, group: 'Power', filterable: true },
+      { id: 'topology', label: 'UPS Topology & Waveform', type: 'text', required: true, group: 'Power' },
+      { id: 'backupTime', label: 'Typical Backup Runtime', type: 'text', required: true, group: 'Battery' },
+      { id: 'outlets', label: 'Protected Output Sockets & AVR', type: 'text', required: true, group: 'Protection' },
+      { id: 'warranty', label: 'Warranty Coverage', type: 'text', required: true, group: 'Coverage' },
+    ],
+  },
+  consumables: {
+    categoryId: 'consumables',
+    fields: [
+      { id: 'consumableType', label: 'Consumable / Extra Type', type: 'text', required: true, group: 'Specification', filterable: true },
+      { id: 'compatibility', label: 'Compatible Machines', type: 'text', required: true, group: 'Compatibility' },
+      { id: 'pageYieldOrCapacity', label: 'Rated Yield / Capacity', type: 'text', required: true, group: 'Performance' },
+      { id: 'authenticity', label: 'Authenticity & Seal', type: 'text', required: true, group: 'Quality' },
+    ],
+  },
 };
 
-/**
- * Phase 3 Seed Data: 6 realistic sample products (2 laptops, 1 desktop, 1 printer, 1 scanner, 1 extra laptop)
- * Clearly marked with seed: true and image isPlaceholder: true.
- */
 export const SEED_PRODUCTS: Product[] = [
   {
     id: 'prod-hp-elitebook-840-g10',
@@ -199,11 +289,11 @@ export const SEED_PRODUCTS: Product[] = [
     stockStatus: 'in_stock',
     warrantyMonths: 12,
     warrantyTerms:
-      '12-Month Product Hardware Warranty tied to this unit’s factory serial number. Covers motherboard, NVMe controller, display assembly, and internal power delivery against factory defects.',
+      '12-Month Product Hardware Warranty tied to this unit’s factory serial number at our Computer Village, Ikeja showroom.',
     shortDescription:
       'Brand-new 13th Gen Intel Core i7 enterprise ultrabook in CNC aluminum chassis with 16GB DDR5 and 512GB PCIe Gen4 SSD.',
     longDescription:
-      'Supplied brand new in factory-sealed HP packaging from our Ikeja showroom. Built for executives, financial analysts, and senior engineers who demand all-day reliability, Wolf Pro Security, and dual Thunderbolt 4 docking.',
+      'Supplied brand new in factory-sealed HP packaging from our Computer Village, Ikeja showroom. Built for executives, financial analysts, and senior engineers who demand all-day reliability, Wolf Pro Security, and dual Thunderbolt 4 docking.',
     images: [
       {
         path: '/assets/products/laptop-pro.svg',
@@ -346,6 +436,110 @@ export const SEED_PRODUCTS: Product[] = [
     updatedBy: 'seed',
   },
   {
+    id: 'prod-uk-hp-elitebook-840-g8',
+    slug: 'hp-elitebook-840-g8-uk-used-i7-16gb-512gb',
+    name: 'HP EliteBook 840 G8 14" (Grade-A UK Used · Core i7 11th Gen)',
+    brand: 'HP',
+    categoryId: 'uk-used',
+    status: 'published',
+    priceKobo: 56500000, // ₦565,000
+    compareAtKobo: 62000000,
+    stockQty: 16,
+    stockStatus: 'in_stock',
+    warrantyMonths: 6,
+    warrantyTerms:
+      '6-Month ILLAI-RHASAK Hardware Warranty attached to serial number. Thoroughly bench-tested at Computer Village, Ikeja with original HP 65W charger.',
+    shortDescription:
+      'Clean Grade-A direct UK corporate lease-return laptop with Intel Core i7-1165G7, 16GB DDR4 RAM, 512GB NVMe SSD, backlit keyboard, and Bang & Olufsen audio.',
+    longDescription:
+      'Hand-selected Grade-A UK used business ultrabook imported directly from corporate UK lease fleets. Zero motherboard repairs, 85%+ verified battery health, scratch-free IPS screen, and original HP adapter included.',
+    images: [
+      {
+        path: '/assets/products/laptop-pro.svg',
+        alt: 'HP EliteBook 840 G8 Grade-A UK Used Laptop',
+        width: 800,
+        height: 600,
+        order: 1,
+        isPlaceholder: true,
+        source: 'ILLAI-RHASAK Studio Render',
+        license: 'Proprietary Commercial Asset',
+      },
+    ],
+    specs: {
+      conditionGrade: 'Grade-A UK Corporate Import (Mint Chassis & Screen)',
+      processor: 'Intel Core i7-1165G7 (4 Cores, 8 Threads, up to 4.7 GHz)',
+      ramGb: 16,
+      storageGb: 512,
+      storageType: 'PCIe NVMe M.2 SSD (100% SMART Health Verified)',
+      display: '14.0" Full HD (1920 × 1080) IPS Anti-Glare',
+      battery: '85%+ Original Factory Capacity · 4–6 Hours Active Work',
+      ports: '2× Thunderbolt 4 USB-C, 2× USB-A 3.2, HDMI 2.0b, Audio',
+      os: 'Windows 11 Pro 64-bit Activated',
+      warranty: '6 Months Per-Serial Showroom Warranty',
+    },
+    colorway: '#cbd5e1',
+    finish: 'metal',
+    dimensions: { widthCm: 32.3, depthCm: 21.4, heightCm: 1.79 },
+    tags: ['Grade-A UK Used', 'Best Value', 'Backlit Keyboard'],
+    audienceTags: ['retail', 'education', 'bulk'],
+    seed: true,
+    createdAt: '2026-10-03T11:00:00.000Z',
+    updatedAt: '2026-10-25T12:00:00.000Z',
+    updatedBy: 'seed',
+  },
+  {
+    id: 'prod-uk-dell-latitude-7420',
+    slug: 'dell-latitude-7420-uk-used-i5-16gb-256gb',
+    name: 'Dell Latitude 7420 Carbon 14" (Grade-A UK Used · Core i5 11th Gen)',
+    brand: 'Dell',
+    categoryId: 'uk-used',
+    status: 'published',
+    priceKobo: 44000000, // ₦440,000
+    compareAtKobo: 48500000,
+    stockQty: 22,
+    stockStatus: 'in_stock',
+    warrantyMonths: 6,
+    warrantyTerms:
+      '6-Month ILLAI-RHASAK Hardware Warranty tied to Dell Service Tag. Includes original Dell Type-C power adapter.',
+    shortDescription:
+      'Ultra-clean Grade-A UK used Dell Latitude 7420 with 11th Gen Core i5-1145G7 vPro, 16GB RAM, 256GB NVMe SSD, and carbon-fiber weave lid.',
+    longDescription:
+      'Ideal for students, software developers, school staff, and corporate teams seeking flagship Dell Latitude durability at an accessible price point. Inspected and certified by our Computer Village, Ikeja engineering desk.',
+    images: [
+      {
+        path: '/assets/products/laptop-edu.svg',
+        alt: 'Dell Latitude 7420 Grade-A UK Used Laptop',
+        width: 800,
+        height: 600,
+        order: 1,
+        isPlaceholder: true,
+        source: 'ILLAI-RHASAK Studio Render',
+        license: 'Proprietary Commercial Asset',
+      },
+    ],
+    specs: {
+      conditionGrade: 'Grade-A UK Used (Unrepaired Original Board)',
+      processor: 'Intel Core i5-1145G7 vPro (up to 4.4 GHz)',
+      ramGb: 16,
+      storageGb: 256,
+      storageType: 'M.2 PCIe NVMe SSD (Upgradeable to 1TB)',
+      display: '14.0" FHD (1920 × 1080) ComfortView Plus IPS',
+      battery: 'Excellent Health · Original 65W USB-C Charger Included',
+      ports: '2× Thunderbolt 4, 1× USB 3.2, HDMI 2.0, MicroSD',
+      os: 'Windows 11 Pro 64-bit',
+      warranty: '6 Months Per-Serial Showroom Warranty',
+    },
+    colorway: '#1e293b',
+    finish: 'matte',
+    dimensions: { widthCm: 32.1, depthCm: 20.8, heightCm: 1.72 },
+    tags: ['Grade-A UK Used', 'Student & Office Favorite'],
+    audienceTags: ['retail', 'education', 'bulk'],
+    seed: true,
+    createdAt: '2026-10-03T14:00:00.000Z',
+    updatedAt: '2026-10-25T12:00:00.000Z',
+    updatedBy: 'seed',
+  },
+  {
     id: 'prod-dell-optiplex-7010-tower',
     slug: 'dell-optiplex-7010-tower-i7-16gb-512gb-monitor',
     name: 'Dell OptiPlex 7010 Tower Desktop + Dell 24" IPS Monitor Bundle',
@@ -446,6 +640,55 @@ export const SEED_PRODUCTS: Product[] = [
     updatedBy: 'seed',
   },
   {
+    id: 'prod-canon-ir-2425i-photocopier',
+    slug: 'canon-imagerunner-2425i-a3-duplex-photocopier',
+    name: 'Canon imageRUNNER 2425i Commercial A3/A4 Multifunction Photocopier',
+    brand: 'Canon',
+    categoryId: 'photocopiers',
+    status: 'published',
+    priceKobo: 165000000, // ₦1,650,000
+    compareAtKobo: 178000000,
+    stockQty: 5,
+    stockStatus: 'in_stock',
+    warrantyMonths: 12,
+    warrantyTerms:
+      '12-Month Hardware & Servicing Warranty supported by our Computer Village, Ikeja engineering team.',
+    shortDescription:
+      'Heavy-duty 25 ppm A3/A4 monochrome digital photocopier with 50-sheet DADF, automatic duplexing, 7-inch touch panel, and network print/scan.',
+    longDescription:
+      'Built for universities, secondary school exam offices, commercial business centres, and corporate print rooms. Delivers ultra-low cost per copy using Canon C-EXV 60 toner with full spare-parts and servicing support from ILLAI-RHASAK.',
+    images: [
+      {
+        path: '/assets/products/photocopier-pro.svg',
+        alt: 'Canon imageRUNNER 2425i Commercial A3 Photocopier Machine',
+        width: 800,
+        height: 600,
+        order: 1,
+        isPlaceholder: true,
+        source: 'ILLAI-RHASAK Studio Render',
+        license: 'Proprietary Commercial Asset',
+      },
+    ],
+    specs: {
+      maxPaperSize: 'A3 / A4 / A5 / Legal (Dual Cassette + 80-Sheet Bypass)',
+      copySpeedPpm: 25,
+      functions: 'Print, Copy, Color Network Scan, Send & USB Direct',
+      feederAndTrays: '50-Sheet Duplex Automatic Document Feeder (DADF) + 330-Sheet Trays',
+      tonerYield: 'Canon C-EXV 60 Black Toner (10,200 Pages @ 6% Coverage)',
+      connectivity: 'Gigabit Ethernet, Wi-Fi, USB 2.0 Host, Mobile Print',
+      warranty: '12 Months Hardware Warranty + Ikeja Installation Support',
+    },
+    colorway: '#334155',
+    finish: 'matte',
+    dimensions: { widthCm: 62.7, depthCm: 60.5, heightCm: 60.2 },
+    tags: ['A3 Commercial Copier', 'DADF Included', 'Brand New'],
+    audienceTags: ['retail', 'education', 'bulk'],
+    seed: true,
+    createdAt: '2026-10-05T14:00:00.000Z',
+    updatedAt: '2026-10-25T12:00:00.000Z',
+    updatedBy: 'seed',
+  },
+  {
     id: 'prod-canon-imageformula-dr-c240',
     slug: 'canon-imageformula-dr-c240-duplex-document-scanner',
     name: 'Canon imageFORMULA DR-C240 High-Speed Duplex ADF Scanner',
@@ -492,6 +735,99 @@ export const SEED_PRODUCTS: Product[] = [
     updatedAt: '2026-10-25T12:00:00.000Z',
     updatedBy: 'seed',
   },
+  {
+    id: 'prod-apc-smart-ups-1500va',
+    slug: 'apc-smart-ups-1500va-pure-sine-wave-tower',
+    name: 'APC Smart-UPS 1500VA / 1000W Pure Sine Wave Tower UPS (SMC1500I)',
+    brand: 'APC',
+    categoryId: 'ups',
+    status: 'published',
+    priceKobo: 49500000, // ₦495,000
+    compareAtKobo: 53500000,
+    stockQty: 12,
+    stockStatus: 'in_stock',
+    warrantyMonths: 12,
+    warrantyTerms:
+      '12-Month Hardware & Inverter Board Warranty tied to APC serial number.',
+    shortDescription:
+      'Enterprise 1.5kVA line-interactive Pure Sine Wave UPS with Automatic Voltage Regulation (AVR) and graphic LCD status display.',
+    longDescription:
+      'Protects high-value workstations, servers, medical equipment, and office network racks against Nigerian mains voltage fluctuations, brownouts, and sudden power cuts.',
+    images: [
+      {
+        path: '/assets/products/ups-power.svg',
+        alt: 'APC Smart-UPS 1500VA Pure Sine Wave Tower UPS',
+        width: 800,
+        height: 600,
+        order: 1,
+        isPlaceholder: true,
+        source: 'ILLAI-RHASAK Studio Render',
+        license: 'Proprietary Commercial Asset',
+      },
+    ],
+    specs: {
+      capacityVa: '1500 VA / 1000 Watts',
+      topology: 'Line-Interactive Pure Sine Wave with Boost & Trim AVR',
+      backupTime: '25 – 65 Minutes (Depending on Connected Workstation Load)',
+      outlets: '8× IEC C13 Battery & Surge Protected Outlets + Surge Arrestor',
+      warranty: '12 Months Per-Serial Hardware Warranty',
+    },
+    colorway: '#0f172a',
+    finish: 'matte',
+    dimensions: { widthCm: 17.1, depthCm: 43.9, heightCm: 21.9 },
+    tags: ['Pure Sine Wave', 'AVR Surge Guard', 'Brand New'],
+    audienceTags: ['retail', 'education', 'bulk'],
+    seed: true,
+    createdAt: '2026-10-06T12:00:00.000Z',
+    updatedAt: '2026-10-25T12:00:00.000Z',
+    updatedBy: 'seed',
+  },
+  {
+    id: 'prod-hp-151x-toner-drum-consumables',
+    slug: 'original-hp-151x-toner-and-copier-consumables-pack',
+    name: 'Original HP 151X High-Yield Black LaserJet Toner + Roller Maintenance Kit',
+    brand: 'HP',
+    categoryId: 'consumables',
+    status: 'published',
+    priceKobo: 18500000, // ₦185,000
+    compareAtKobo: 21000000,
+    stockQty: 30,
+    stockStatus: 'in_stock',
+    warrantyMonths: 6,
+    warrantyTerms:
+      'Original HP holographic security seal verified at handover. Guaranteed zero leakage and full 9,700-page yield.',
+    shortDescription:
+      'Genuine high-yield HP 151X (W1510X) 9,700-page black toner cartridge bundled with preventive pickup roller maintenance kit for LaserJet Pro 4003/4103 series.',
+    longDescription:
+      'Keep your office printers and copiers running at peak crispness without fuser damage. We stock original HP, Canon, and Sharp toners, drum units, fuser films, laptop chargers, and SSD/RAM upgrade modules in Computer Village, Ikeja.',
+    images: [
+      {
+        path: '/assets/products/consumables-kit.svg',
+        alt: 'Original HP 151X High-Yield Toner and Maintenance Consumables Kit',
+        width: 800,
+        height: 600,
+        order: 1,
+        isPlaceholder: true,
+        source: 'ILLAI-RHASAK Studio Render',
+        license: 'Proprietary Commercial Asset',
+      },
+    ],
+    specs: {
+      consumableType: 'Original High-Yield Laser Toner Cartridge + Roller Kit',
+      compatibility: 'HP LaserJet Pro 4003dn, 4003dw, MFP 4103fdn, 4103fdw',
+      pageYieldOrCapacity: '9,700 Standard Pages (ISO/IEC 19752)',
+      authenticity: '100% Original Factory Box with QR Security Hologram',
+    },
+    colorway: '#1e293b',
+    finish: 'matte',
+    dimensions: { widthCm: 36.2, depthCm: 10.9, heightCm: 19.8 },
+    tags: ['Original Consumable', '9,700 Pages', 'Maintenance Ready'],
+    audienceTags: ['retail', 'education', 'bulk'],
+    seed: true,
+    createdAt: '2026-10-06T15:00:00.000Z',
+    updatedAt: '2026-10-25T12:00:00.000Z',
+    updatedBy: 'seed',
+  },
 ];
 
 export const SEED_DISCOUNTS: Discount[] = [
@@ -529,11 +865,11 @@ export const SEED_DISCOUNTS: Discount[] = [
   {
     id: 'disc-print5',
     code: 'PRINT5',
-    description: '5% Off Printers Category',
+    description: '5% Off Printers & Photocopiers',
     type: 'percent',
     value: 500, // 5%
     scope: 'category',
-    scopeIds: ['printers'],
+    scopeIds: ['printers', 'photocopiers'],
     minSubtotalKobo: 30000000, // ₦300,000
     maxUses: 150,
     usedCount: 3,

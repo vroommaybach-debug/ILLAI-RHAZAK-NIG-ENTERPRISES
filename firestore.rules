@@ -71,7 +71,7 @@ service cloud.firestore {
 
     function isValidLead(data) {
       return data.keys().hasAll(['segment', 'contactName', 'phone', 'requirements', 'createdAt']) &&
-             data.segment in ['schools', 'bulk', 'delivery', 'international'] &&
+             data.segment in ['schools', 'bulk', 'delivery', 'international', 'servicing'] &&
              data.contactName is string && data.contactName.size() >= 2 && data.contactName.size() <= 120 &&
              data.phone is string && data.phone.size() >= 5 && data.phone.size() <= 40 &&
              data.requirements is string && data.requirements.size() >= 2 && data.requirements.size() <= 2000 &&
@@ -134,7 +134,7 @@ service cloud.firestore {
     // Leads
     match /leads/{leadId} {
       allow get: if isValidId(leadId);
-      allow list: if resource.data.segment in ['schools', 'bulk', 'delivery', 'international'];
+      allow list: if resource.data.segment in ['schools', 'bulk', 'delivery', 'international', 'servicing'];
       allow create, update: if isValidId(leadId) && isValidLead(incoming());
       allow delete: if isValidId(leadId);
     }

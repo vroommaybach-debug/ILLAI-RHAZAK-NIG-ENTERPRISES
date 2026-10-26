@@ -23,7 +23,7 @@ export const SEED_POLICIES: Record<PolicyDoc['slug'], PolicyDoc> = {
       },
       {
         heading: '4. How to Initiate a Warranty Claim',
-        body: 'Present your original ILLAI-RHASAK order reference (IR-XXXXXX) and the unit matching the recorded serial number at our Ikeja, Lagos showroom, or contact 0904 645 3977 / illairhasakng@gmail.com prior to shipping an out-of-state machine for diagnostic assessment.',
+        body: 'Present your original ILLAI-RHASAK order reference (IR-XXXXXX) and the unit matching the recorded serial number at our Computer Village, Ikeja, Lagos showroom, or contact 0706 176 6728 / illairhasakng@gmail.com prior to shipping an out-of-state machine for diagnostic assessment.',
       },
     ],
   },

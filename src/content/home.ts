@@ -83,42 +83,42 @@ export interface HomeContentMap {
 
 export const DEFAULT_HOME_CONTENT: HomeContentMap = {
   hero: {
-    eyebrow: 'Ikeja, Lagos · Brand-New Hardware Only · 7.5% VAT Inclusive',
+    eyebrow: 'Computer Village, Ikeja, Lagos · Brand-New & UK Used · General Servicing',
     headline: 'Serious Machines for Buyers Who Refuse Counterfeits.',
     subheadline:
-      'Brand-new laptops, tower desktops, LaserJet printers, and high-speed ADF scanners supplied straight from Ikeja, Lagos. Every unit carries its own serial-verified warranty and transparent VAT breakdown.',
+      'Brand-new and Grade-A UK used laptops, tower desktops, LaserJet printers, photocopiers, ADF scanners, UPS units, consumables, and general servicing straight from Computer Village, Ikeja, Lagos.',
     primaryCtaLabel: 'Explore Hardware Catalog',
-    secondaryCtaLabel: 'Order on WhatsApp (0904 645 3977)',
+    secondaryCtaLabel: 'Speak to a Specialist (0706 176 6728)',
     trustPoints: [
-      '100% Brand New — Never Refurbished',
+      'Brand New & Grade-A UK Used Hardware',
       'Warranty Attached Per Individual Machine',
       'VAT 7.5% Included in Every Listed Price',
-      'Ikeja Pickup, Lagos Dispatch & Nationwide Cargo',
+      'Computer Village, Ikeja Pickup & Nationwide Delivery',
     ],
     featuredMachineSlug: 'hp-elitebook-840-g10-i7-16gb-512gb',
     featuredCallout: 'HP EliteBook 840 G10 · Core i7 13th Gen · 12-Month Serial Warranty',
   },
   marqueeItems: [
     'BRAND-NEW LAPTOPS',
+    'GRADE-A UK USED LAPTOPS',
     'TOWER & ALL-IN-ONE DESKTOPS',
-    'ENTERPRISE LASERJET PRINTERS',
-    'DUPLEX ADF DOCUMENT SCANNERS',
-    'SCHOOL ICT LAB BUNDLES',
-    'CORPORATE PRO-FORMA INVOICING',
-    'IKEJA SHOWROOM PICKUP',
-    'NATIONWIDE & INTERNATIONAL DELIVERY',
+    'PHOTOCOPIER MACHINES',
+    'LASERJET PRINTERS & SCANNERS',
+    'UPS & POWER BACKUP',
+    'CONSUMABLES & EXTRAS',
+    'GENERAL SERVICING & MAINTENANCE',
   ],
   categoriesHeader: {
-    eyebrow: '01. Core Hardware Lines',
-    title: 'Four Precision Categories. Zero Grey-Market Refurbs.',
+    eyebrow: '01. Complete Hardware & Consumables Range',
+    title: 'Eight Precision Categories. One Trusted Standard.',
     subtitle:
-      'Every product in our catalog is factory-sealed and verified before dispatch. Select a hardware category to filter by exact specification schema.',
+      'From brand-new and Grade-A UK used laptops to commercial photocopiers, UPS backup, consumables, and general servicing in Computer Village, Ikeja.',
   },
   audiencesHeader: {
-    eyebrow: '02. Tailored Procurement Paths',
-    title: 'Built Around How You Buy and Where You Operate.',
+    eyebrow: '02. Tailored Procurement & Servicing Paths',
+    title: 'Built Around How You Buy and Maintain Your Machines.',
     subtitle:
-      'From a single executive notebook delivered in Lagos today to a 40-seat school computer lab shipped inter-state with formal invoicing.',
+      'From a single notebook delivered in Lagos today to a 40-seat school computer lab or routine fleet servicing.',
   },
   audiences: [
     {
@@ -126,7 +126,7 @@ export const DEFAULT_HOME_CONTENT: HomeContentMap = {
       eyebrow: 'Education & CBT Centres',
       title: 'Schools, Colleges & ICT Labs',
       description:
-        'Term-ready starter bundles combining student laptops, a teacher desktop, duplex printer, and optical exam scanner with staged delivery.',
+        'Term-ready starter bundles combining student laptops, a teacher desktop, duplex printer, photocopier, and optical exam scanner with staged delivery.',
       route: '/schools',
       ctaLabel: 'Configure School Bundle',
       whatsappSegment: 'schools',
@@ -145,10 +145,10 @@ export const DEFAULT_HOME_CONTENT: HomeContentMap = {
     },
     {
       id: 'lagos',
-      eyebrow: 'Ikeja & Greater Lagos',
+      eyebrow: 'Computer Village, Ikeja & Greater Lagos',
       title: 'Same-Day Lagos Delivery & Pickup',
       description:
-        'Collect in person at our Ikeja showroom for ₦0 fee or book insured dispatch across Lagos Mainland, VI, Ikoyi, and Lekki.',
+        'Collect in person at our Computer Village, Ikeja showroom for ₦0 fee or book insured dispatch across Lagos Mainland, VI, Ikoyi, and Lekki.',
       route: '/delivery',
       ctaLabel: 'View Lagos Zones',
       whatsappSegment: 'lagos',
@@ -230,19 +230,19 @@ export const DEFAULT_HOME_CONTENT: HomeContentMap = {
     eyebrow: '04. The ILLAI-RHASAK Trust Architecture',
     title: 'Clear Terms Before You Pay a Single Naira.',
     subtitle:
-      'High-value hardware buyers deserve verifiable guarantees. Here is exactly how condition, warranty, and returns work on every transaction.',
+      'High-value hardware buyers deserve verifiable guarantees. Here is exactly how condition, warranty, servicing, and returns work on every transaction.',
     pillars: [
       {
         number: '01',
-        title: 'Strictly Brand-New Hardware',
-        body: 'We do not sell UK-used, refurbished, or repackaged machines. Every laptop, desktop, printer, and scanner leaves Ikeja in its original factory seal.',
+        title: 'Verified Hardware & Transparent Grading',
+        body: 'Every machine is clearly designated as Factory-Sealed Brand New or Grade-A Direct UK Corporate Used—never misrepresented.',
         linkLabel: 'Inspect Catalog',
         linkHref: '/shop',
       },
       {
         number: '02',
-        title: 'Warranty Attached Per Product',
-        body: 'Warranty is never a vague store slogan—it is bound to each specific product and serial number (12 to 24 months depending on the machine) and printed on your receipt.',
+        title: 'Warranty & General Servicing',
+        body: 'Warranty is bound to each specific product and serial number on your receipt, backed by in-house general servicing for laptops, printers, copiers, and UPS in Computer Village, Ikeja.',
         linkLabel: 'Read Warranty Policy',
         linkHref: '/policies/warranty',
       },
@@ -256,12 +256,12 @@ export const DEFAULT_HOME_CONTENT: HomeContentMap = {
     ],
   },
   ctaBand: {
-    eyebrow: 'Ready When You Are · Ikeja, Lagos',
-    title: 'Checkout Online with Paystack or Order Directly on WhatsApp.',
+    eyebrow: 'Ready When You Are · Computer Village, Ikeja, Lagos',
+    title: 'Checkout Online with Paystack or Speak to a Specialist on WhatsApp.',
     subtitle:
-      'Whether you prefer instant online card/bank transfer checkout or speaking with our Ikeja sales desk with a pre-filled itemized reference, both paths generate a verified ILLAI-RHASAK order receipt.',
-    primaryCta: 'Shop All Brand-New Hardware',
-    secondaryCta: 'Chat on WhatsApp (0904 645 3977)',
+      'Whether you prefer instant online card/bank transfer checkout or speaking with our Computer Village, Ikeja sales & servicing desk, both paths generate a verified ILLAI-RHASAK order receipt.',
+    primaryCta: 'Shop All Hardware & Consumables',
+    secondaryCta: 'Speak to a Specialist (0706 176 6728)',
   },
   sectionOrder: [
     { id: 'hero', label: 'Hero Showcase', visible: true },

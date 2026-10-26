@@ -14,6 +14,9 @@ export const Nav: React.FC = () => {
   const openDrawer = useCartStore((s) => s.openDrawer);
   const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
 
+  const whatsappNum = siteSettings.whatsappNumber || '2347061766728';
+  const whatsappDisplay = siteSettings.whatsappDisplay || '0706 176 6728';
+
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname, location.search]);
@@ -35,7 +38,7 @@ export const Nav: React.FC = () => {
 
   return (
     <nav className="site-nav" aria-label="Primary navigation">
-      <div className="wrap">
+      <div className="nav-bar-row">
         <Link
           className="brand"
           to="/"
@@ -49,26 +52,24 @@ export const Nav: React.FC = () => {
             alt="ILLAI-RHASAK Nig. Enterprises Logo"
             className="brand-logo"
           />
-          <span className="brand-wordmark">
+          <span className="brand-wordmark-full">
             {siteSettings.wordmark || 'ILLAI-RHASAK NIG. ENTERPRISES'}
           </span>
+          <span className="brand-wordmark-short">ILLAI-RHASAK</span>
         </Link>
 
         <div className="navlinks">
           <a href="#categories" onClick={(e) => handleAnchorNav(e, '#categories')}>
+            Categories
+          </a>
+          <a href="#storefront" onClick={(e) => handleAnchorNav(e, '#storefront')}>
             Shop
+          </a>
+          <a href="#servicing" onClick={(e) => handleAnchorNav(e, '#servicing')}>
+            Servicing
           </a>
           <a href="#built-for" onClick={(e) => handleAnchorNav(e, '#built-for')}>
             Who we serve
-          </a>
-          <a href="#spec" onClick={(e) => handleAnchorNav(e, '#spec')}>
-            Spec card
-          </a>
-          <a href="#warranty" onClick={(e) => handleAnchorNav(e, '#warranty')}>
-            Warranty
-          </a>
-          <a href="#delivery" onClick={(e) => handleAnchorNav(e, '#delivery')}>
-            Delivery
           </a>
           <Link to="/shop" className={location.pathname === '/shop' ? 'active' : ''}>
             Full Catalogue
@@ -91,11 +92,11 @@ export const Nav: React.FC = () => {
 
           <a
             className="btn btn-primary nav-wa-btn"
-            href={`https://wa.me/${siteSettings.whatsappNumber || '2349046453977'}`}
+            href={`https://wa.me/${whatsappNum}`}
             target="_blank"
             rel="noopener noreferrer"
           >
-            WhatsApp us
+            Speak to a Specialist: {whatsappDisplay}
           </a>
 
           <button
@@ -114,41 +115,41 @@ export const Nav: React.FC = () => {
         <div className="mobile-nav-drawer" role="region" aria-label="Mobile navigation">
           <div className="wrap mobile-nav-inner">
             <a href="#categories" onClick={(e) => handleAnchorNav(e, '#categories')}>
-              Shop Categories
+              Product Categories (New, UK Used, Copiers, UPS)
+            </a>
+            <a href="#storefront" onClick={(e) => handleAnchorNav(e, '#storefront')}>
+              Live Storefront &amp; Consumables
+            </a>
+            <a href="#servicing" onClick={(e) => handleAnchorNav(e, '#servicing')}>
+              General Servicing &amp; Maintenance
             </a>
             <a href="#built-for" onClick={(e) => handleAnchorNav(e, '#built-for')}>
-              Who we serve
-            </a>
-            <a href="#spec" onClick={(e) => handleAnchorNav(e, '#spec')}>
-              Spec card
+              Who We Serve (Schools, Bulk &amp; Delivery)
             </a>
             <a href="#warranty" onClick={(e) => handleAnchorNav(e, '#warranty')}>
-              Warranty
-            </a>
-            <a href="#delivery" onClick={(e) => handleAnchorNav(e, '#delivery')}>
-              Delivery
+              Warranty &amp; Returns
             </a>
             <Link to="/shop" onClick={() => setMobileMenuOpen(false)}>
-              Full Catalogue
+              Full Hardware Catalogue
             </Link>
             <Link to="/schools" onClick={() => setMobileMenuOpen(false)}>
-              Schools &amp; Education
+              Schools &amp; ICT Labs
             </Link>
             <Link to="/bulk" onClick={() => setMobileMenuOpen(false)}>
-              Bulk &amp; Corporate
+              Bulk &amp; Corporate Supply
             </Link>
             <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
-              Admin
+              Admin Console
             </Link>
-            <div className="pt-2 border-t border-white/10 flex flex-wrap gap-2">
+            <div className="pt-3 flex flex-col gap-2">
               <a
                 className="btn btn-primary w-full"
-                style={{ padding: '12px 18px', fontSize: '14px' }}
-                href={`https://wa.me/${siteSettings.whatsappNumber || '2349046453977'}`}
+                style={{ padding: '13px 18px', fontSize: '14px' }}
+                href={`https://wa.me/${whatsappNum}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Chat on WhatsApp ({siteSettings.whatsappDisplay || '0904 645 3977'})
+                Speak to a Specialist: {whatsappDisplay}
               </a>
             </div>
           </div>

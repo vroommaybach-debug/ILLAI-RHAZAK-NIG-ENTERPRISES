@@ -4,6 +4,8 @@ import { useAppData } from '../app/storeProvider';
 
 export const Footer: React.FC = () => {
   const { siteSettings } = useAppData();
+  const whatsappDisplay = siteSettings.whatsappDisplay || '0706 176 6728';
+  const whatsappNum = siteSettings.whatsappNumber || '2347061766728';
 
   return (
     <footer className="site-footer">
@@ -17,35 +19,45 @@ export const Footer: React.FC = () => {
         </div>
         <div className="f-mark">ILLAI-RHASAK</div>
         <div className="f-sub">
-          Nig. Enterprises &middot; Laptops &middot; Desktops &middot; Printers &middot; Scanners
+          Nig. Enterprises &middot; Brand-New &amp; UK Used Laptops &middot; Desktops &middot; Printers &middot; Photocopiers &middot; Scanners &middot; UPS &middot; Consumables &middot; General Servicing
         </div>
 
         <div className="f-cols">
           <div>
-            <h4>Visit</h4>
-            <p>Ikeja, Lagos, Nigeria</p>
-            <p>WhatsApp: {siteSettings.whatsappDisplay || '0904 645 3977'}</p>
+            <h4>Showroom &amp; Servicing</h4>
+            <p>Computer Village, Ikeja, Lagos, Nigeria</p>
+            <a
+              href={`https://wa.me/${whatsappNum}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Speak to a Specialist: {whatsappDisplay}
+            </a>
             <a href={`mailto:${siteSettings.email || 'illairhasakng@gmail.com'}`}>
               {siteSettings.email || 'illairhasakng@gmail.com'}
             </a>
           </div>
 
           <div>
-            <h4>Shop</h4>
-            <Link to="/shop?category=laptops">Laptops</Link>
+            <h4>Shop Hardware</h4>
+            <Link to="/shop?category=laptops">Brand-New Laptops</Link>
+            <Link to="/shop?category=uk-used">UK Used Laptops</Link>
             <Link to="/shop?category=desktops">Desktops</Link>
             <Link to="/shop?category=printers">Printers</Link>
+            <Link to="/shop?category=photocopiers">Photocopier Machines</Link>
             <Link to="/shop?category=scanners">Scanners</Link>
-            <Link to="/cart">Shopping Cart</Link>
+            <Link to="/shop?category=ups">UPS &amp; Power Backup</Link>
+            <Link to="/shop?category=consumables">Consumables &amp; Extras</Link>
           </div>
 
           <div>
-            <h4>Serve</h4>
-            <Link to="/schools">Schools</Link>
-            <Link to="/bulk">Bulk &amp; corporate</Link>
-            <Link to="/delivery">Delivery</Link>
-            <Link to="/international">International</Link>
-            <Link to="/admin">Admin Portal</Link>
+            <h4>Serve &amp; Support</h4>
+            <a href="/#servicing">General Servicing &amp; Repairs</a>
+            <Link to="/schools">Schools &amp; ICT Labs</Link>
+            <Link to="/bulk">Bulk &amp; Corporate</Link>
+            <Link to="/delivery">Lagos &amp; Nationwide Delivery</Link>
+            <Link to="/international">International Export</Link>
+            <Link to="/admin">Admin Console</Link>
           </div>
 
           <div>
@@ -60,7 +72,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="f-bottom">
-          <span>&copy; 2026 ILLAI-RHASAK Nig. Enterprises. All rights reserved.</span>
+          <span>&copy; 2026 ILLAI-RHASAK Nig. Enterprises · Computer Village, Ikeja, Lagos. All rights reserved.</span>
           <span className="june">
             Imagined by <b>June Studio</b>
           </span>

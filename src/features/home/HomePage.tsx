@@ -8,9 +8,21 @@ import { calculateVatComponentKobo, formatNgnFromKobo } from '../../lib/money';
 import { registerGsapPluginsOnce, shouldReduceMotion } from '../../lib/motion';
 import { useCartStore } from '../cart/cartStore';
 
+const CATEGORY_ACCENT_COLORS: Record<string, string> = {
+  laptops: '#2563ff',
+  'uk-used': '#38bdf8',
+  desktops: '#0ea5e9',
+  printers: '#ef2b3a',
+  photocopiers: '#f5b93a',
+  scanners: '#6366f1',
+  ups: '#10b981',
+  consumables: '#ec4899',
+};
+
 export const HomePage: React.FC = () => {
   const {
     products,
+    categories,
     siteSettings,
     themeSettings,
     submitSegmentLead,
@@ -28,6 +40,11 @@ export const HomePage: React.FC = () => {
     [products]
   );
 
+  const visibleCategories = useMemo(
+    () => categories.filter((c) => c.visible).sort((a, b) => a.order - b.order),
+    [categories]
+  );
+
   const [selectedCat, setSelectedCat] = useState<string>('all');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -35,9 +52,9 @@ export const HomePage: React.FC = () => {
     () => publishedProducts[0]?.id || ''
   );
 
-  // Quick Quote state beneath template
+  // Quick Quote & Servicing state beneath template
   const [quoteSegment, setQuoteSegment] = useState<
-    'schools' | 'bulk' | 'delivery' | 'international'
+    'schools' | 'bulk' | 'servicing' | 'delivery' | 'international'
   >('schools');
   const [quoteOrg, setQuoteOrg] = useState('');
   const [quoteName, setQuoteName] = useState('');
@@ -77,7 +94,7 @@ export const HomePage: React.FC = () => {
     });
   }, [publishedProducts, selectedCat, selectedBrand, searchQuery]);
 
-  // Exact GSAP animations from ILLAI-RHASAK_Homepage__Proposal_Draft__08d9c060.html
+  // Proposal Draft GSAP animations
   useEffect(() => {
     registerGsapPluginsOnce();
     const reduce = shouldReduceMotion(themeSettings.motion.level);
@@ -85,7 +102,6 @@ export const HomePage: React.FC = () => {
     if (!scope) return;
 
     const ctx = gsap.context(() => {
-      // Hero intro
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
       tl.fromTo(
         '.hero h1 .split span',
@@ -111,7 +127,6 @@ export const HomePage: React.FC = () => {
         });
       }
 
-      // Spec rows build on scroll
       gsap.fromTo(
         '#specRows .row',
         { opacity: 0, y: reduce ? 0 : 14 },
@@ -125,7 +140,6 @@ export const HomePage: React.FC = () => {
         }
       );
 
-      // Counters
       scope.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
         const target = Number(el.dataset.count || '0');
         ScrollTrigger.create({
@@ -152,7 +166,6 @@ export const HomePage: React.FC = () => {
       });
     }, scope);
 
-    // Category 3D tilt on mousemove
     const cards = Array.from(scope.querySelectorAll<HTMLElement>('.cat'));
     const moveHandlers = new Map<HTMLElement, (e: MouseEvent) => void>();
     const leaveHandlers = new Map<HTMLElement, () => void>();
@@ -190,7 +203,7 @@ export const HomePage: React.FC = () => {
         if (l) card.removeEventListener('mouseleave', l);
       });
     };
-  }, [themeSettings.motion.level]);
+  }, [themeSettings.motion.level, visibleCategories.length]);
 
   const handleSelectCategoryCard = (catSlug: string) => {
     setSelectedCat(catSlug);
@@ -221,7 +234,8 @@ export const HomePage: React.FC = () => {
     setQuoteReq('');
   };
 
-  const whatsappNum = siteSettings.whatsappNumber || '2349046453977';
+  const whatsappNum = siteSettings.whatsappNumber || '2347061766728';
+  const whatsappDisplay = siteSettings.whatsappDisplay || '0706 176 6728';
 
   const localBusinessSchema = {
     '@context': 'https://schema.org',
@@ -232,7 +246,7 @@ export const HomePage: React.FC = () => {
     email: siteSettings.email,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Ikeja',
+      streetAddress: 'Computer Village, Ikeja',
       addressLocality: 'Ikeja',
       addressRegion: 'Lagos',
       addressCountry: 'NG',
@@ -249,7 +263,7 @@ export const HomePage: React.FC = () => {
       />
 
       {/* =====================================================================
-          PART 1: EXACT PROPOSAL DRAFT HTML TEMPLATE
+          PART 1: PROPOSAL DRAFT HTML TEMPLATE (UPGRADED WITH EXPANDED SCOPE)
          ===================================================================== */}
       <header className="hero" id="top">
         <div className="orb a" />
@@ -258,7 +272,7 @@ export const HomePage: React.FC = () => {
         <div className="hero-grid" />
         <div className="hero-inner">
           <div className="eyebrow">
-            Ikeja, Lagos &middot; Brand new &middot; Warranty on every unit
+            Computer Village, Ikeja, Lagos &middot; Brand New &amp; UK Used &middot; General Servicing
           </div>
           <h1>
             <span className="split">
@@ -269,9 +283,9 @@ export const HomePage: React.FC = () => {
             </span>
           </h1>
           <p className="lead">
-            Laptops, desktops, printers and scanners, every one brand new and
-            covered by warranty. Shop for yourself, equip a school, or stock an
-            office across Nigeria and abroad.
+            Brand-new and Grade-A UK used laptops, desktops, printers, commercial
+            photocopiers, scanners, UPS power backup, original consumables, and
+            general hardware servicing — all backed by warranty from Computer Village, Ikeja, Lagos.
           </p>
           <div className="hero-ctas">
             <a className="btn btn-primary" href="#categories">
@@ -283,21 +297,21 @@ export const HomePage: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Talk to a specialist
+              Speak to a Specialist ({whatsappDisplay})
             </a>
           </div>
           <div className="stats">
             <div className="stat">
-              <b data-count="100">100</b>
-              <span>% brand new stock</span>
+              <b data-count="8">8</b>
+              <span>product lines + consumables</span>
             </div>
             <div className="stat">
               <b data-count="1">1</b>
               <span>warranty per unit</span>
             </div>
             <div className="stat">
-              <b>NG + Intl</b>
-              <span>delivery</span>
+              <b>Ikeja + NG</b>
+              <span>sales &amp; general servicing</span>
             </div>
           </div>
         </div>
@@ -306,29 +320,43 @@ export const HomePage: React.FC = () => {
 
       <div className="marquee" aria-hidden="true">
         <div className="track">
-          <span>Laptops</span>
+          <span>Brand-New Laptops</span>
+          <i>&bull;</i>
+          <span>Grade-A UK Used Laptops</span>
           <i>&bull;</i>
           <span>Desktops</span>
           <i>&bull;</i>
           <span>Printers</span>
           <i>&bull;</i>
+          <span>Photocopier Machines</span>
+          <i>&bull;</i>
           <span>Scanners</span>
           <i>&bull;</i>
-          <span>Brand new only</span>
+          <span>UPS &amp; Power Backup</span>
           <i>&bull;</i>
-          <span>Warranty on every unit</span>
+          <span>Consumables &amp; Extras</span>
           <i>&bull;</i>
-          <span>Laptops</span>
+          <span>General Servicing</span>
+          <i>&bull;</i>
+          <span>Computer Village, Ikeja</span>
+          <i>&bull;</i>
+          <span>Brand-New Laptops</span>
+          <i>&bull;</i>
+          <span>Grade-A UK Used Laptops</span>
           <i>&bull;</i>
           <span>Desktops</span>
           <i>&bull;</i>
           <span>Printers</span>
           <i>&bull;</i>
+          <span>Photocopier Machines</span>
+          <i>&bull;</i>
           <span>Scanners</span>
           <i>&bull;</i>
-          <span>Brand new only</span>
+          <span>UPS &amp; Power Backup</span>
           <i>&bull;</i>
-          <span>Warranty on every unit</span>
+          <span>Consumables &amp; Extras</span>
+          <i>&bull;</i>
+          <span>General Servicing</span>
           <i>&bull;</i>
         </div>
       </div>
@@ -337,98 +365,67 @@ export const HomePage: React.FC = () => {
         <div className="wrap">
           <div className="head">
             <div>
-              <div className="eyebrow">The range</div>
+              <div className="eyebrow">The expanded range</div>
               <h2>
-                Four categories.
+                Complete hardware.
                 <br />
-                One standard.
+                Consumables &amp; servicing.
               </h2>
             </div>
             <p className="lead">
-              Every product is verified brand new, specified in full, and sold
-              with warranty.
+              From brand-new and clean UK used laptops to heavy-duty photocopiers,
+              UPS backup, toners, and expert maintenance in Computer Village, Ikeja.
             </p>
           </div>
           <div className="cats">
-            <a
-              className="cat"
-              href="#storefront"
-              onClick={(e) => {
-                e.preventDefault();
-                handleSelectCategoryCard('laptops');
-              }}
-              style={{ ['--c' as string]: '#2563ff' }}
-            >
-              <div className="stage" />
-              <span className="num">01</span>
-              <div>
-                <h3>Laptops</h3>
-                <p>
-                  Business, creator and student machines, from everyday work to
-                  heavy design.
-                </p>
-                <span className="go">Explore &rarr;</span>
-              </div>
-            </a>
-            <a
-              className="cat"
-              href="#storefront"
-              onClick={(e) => {
-                e.preventDefault();
-                handleSelectCategoryCard('desktops');
-              }}
-              style={{ ['--c' as string]: '#38bdf8' }}
-            >
-              <div className="stage" />
-              <span className="num">02</span>
-              <div>
-                <h3>Desktops</h3>
-                <p>
-                  Towers and all-in-ones built for offices, studios and labs.
-                </p>
-                <span className="go">Explore &rarr;</span>
-              </div>
-            </a>
-            <a
-              className="cat"
-              href="#storefront"
-              onClick={(e) => {
-                e.preventDefault();
-                handleSelectCategoryCard('printers');
-              }}
-              style={{ ['--c' as string]: '#ef2b3a' }}
-            >
-              <div className="stage" />
-              <span className="num">03</span>
-              <div>
-                <h3>Printers</h3>
-                <p>
-                  Office, photo and high-volume printers, with consumables
-                  supply.
-                </p>
-                <span className="go">Explore &rarr;</span>
-              </div>
-            </a>
-            <a
-              className="cat"
-              href="#storefront"
-              onClick={(e) => {
-                e.preventDefault();
-                handleSelectCategoryCard('scanners');
-              }}
-              style={{ ['--c' as string]: '#f5b93a' }}
-            >
-              <div className="stage" />
-              <span className="num">04</span>
-              <div>
-                <h3>Scanners</h3>
-                <p>
-                  Document and archive scanners for schools, clinics and
-                  offices.
-                </p>
-                <span className="go">Explore &rarr;</span>
-              </div>
-            </a>
+            {visibleCategories.map((cat, idx) => {
+              const accent = CATEGORY_ACCENT_COLORS[cat.slug] || '#2563ff';
+              const hasCustomPhoto =
+                cat.heroImage && !cat.heroImage.startsWith('/assets/products/');
+              return (
+                <a
+                  key={cat.id}
+                  className="cat"
+                  href="#storefront"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSelectCategoryCard(cat.slug);
+                  }}
+                  style={{ ['--c' as string]: accent }}
+                >
+                  <div className="stage" />
+                  <div className="relative z-10 flex items-center justify-between gap-2">
+                    <span className="num">
+                      {String(idx + 1).padStart(2, '0')}
+                    </span>
+                    {cat.eyebrow && (
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#9aa3b8] truncate">
+                        {cat.eyebrow}
+                      </span>
+                    )}
+                  </div>
+
+                  {cat.heroImage && (
+                    <div className="relative z-10 my-4 h-32 w-full flex items-center justify-center overflow-hidden rounded-xl">
+                      <img
+                        src={cat.heroImage}
+                        alt={cat.name}
+                        referrerPolicy="no-referrer"
+                        className={`h-full w-full ${
+                          hasCustomPhoto ? 'object-cover' : 'object-contain'
+                        } opacity-90`}
+                      />
+                    </div>
+                  )}
+
+                  <div className="relative z-10">
+                    <h3>{cat.name}</h3>
+                    <p>{cat.description}</p>
+                    <span className="go">Explore {cat.name} &rarr;</span>
+                  </div>
+                </a>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -437,30 +434,31 @@ export const HomePage: React.FC = () => {
         <div className="wrap">
           <div className="head">
             <div>
-              <div className="eyebrow">Who we serve</div>
+              <div className="eyebrow">Who we serve &amp; maintain</div>
               <h2>
                 Built for how
                 <br />
-                you buy.
+                you buy &amp; operate.
               </h2>
             </div>
             <p className="lead">
-              Whether you are buying one machine or a hundred, there is a clear
-              path for you.
+              Whether you are buying one laptop, equipping a school ICT lab,
+              stocking office consumables, or booking general servicing in
+              Computer Village, Ikeja.
             </p>
           </div>
           <div className="seg-grid">
             <div className="seg wide">
               <span className="tag">Schools &amp; education</span>
-              <h3>Equip the whole classroom, lab or library.</h3>
+              <h3>Equip the whole classroom, lab or exam office.</h3>
               <p>
-                Term-ready bundles of laptops, desktops and scanners for
-                schools, colleges and training centres, with staged delivery and
-                invoicing.
+                Term-ready bundles of brand-new or Grade-A UK used laptops,
+                desktops, printers, commercial photocopiers, scanners, and UPS
+                units with staged delivery and invoicing.
               </p>
               <a
                 className="btn btn-primary"
-                href={`https://wa.me/${whatsappNum}?text=Hello%2C%20I%27m%20from%20a%20school%20and%20would%20like%20an%20education%20quote.`}
+                href={`https://wa.me/${whatsappNum}?text=Hello%20ILLAI-RHASAK%2C%20I%27m%20from%20a%20school%20and%20would%20like%20an%20education%20hardware%20quote.`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -471,63 +469,52 @@ export const HomePage: React.FC = () => {
               <span className="tag">Bulk &amp; corporate</span>
               <h3>Stock your office. Scale your team.</h3>
               <p>
-                Volume pricing for offices, agencies and businesses buying in
-                batches, with account support and tailored warranty handling.
+                Volume pricing for offices, agencies, and businesses buying
+                laptops, copiers, UPS units, and original toners in batches with
+                dedicated account and warranty support.
               </p>
               <a
                 className="btn btn-primary"
-                href={`https://wa.me/${whatsappNum}?text=Hello%2C%20I%20need%20a%20bulk%20price%20quote.`}
+                href={`https://wa.me/${whatsappNum}?text=Hello%20ILLAI-RHASAK%2C%20I%20need%20a%20bulk%20corporate%20price%20quote.`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Get a bulk price
               </a>
             </div>
-            <div className="seg" id="delivery">
-              <span className="tag">Lagos</span>
-              <h3>Delivered in Lagos.</h3>
+            <div className="seg wide" id="servicing">
+              <span className="tag">General Servicing &amp; Maintenance</span>
+              <h3>Diagnostics, repairs &amp; preventive maintenance.</h3>
               <p>
-                Pick up at our Ikeja showroom or have it delivered across Lagos.
+                Full hardware servicing at Computer Village, Ikeja and on-site
+                corporate maintenance for laptops, desktops, LaserJet printers,
+                commercial photocopier machines, scanners, and UPS inverters —
+                plus genuine replacement parts and consumables.
               </p>
               <a
-                className="btn btn-ghost"
-                href={`https://wa.me/${whatsappNum}?text=Hello%2C%20I%27d%20like%20delivery%20in%20Lagos.`}
+                className="btn btn-primary"
+                href={`https://wa.me/${whatsappNum}?text=Hello%20ILLAI-RHASAK%2C%20I%20would%20like%20to%20book%20General%20Servicing%20or%20maintenance%20at%20Computer%20Village%2C%20Ikeja.`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Ask about delivery
+                Book General Servicing ({whatsappDisplay})
               </a>
             </div>
-            <div className="seg">
-              <span className="tag">Across Nigeria</span>
-              <h3>Anywhere in the country.</h3>
+            <div className="seg wide" id="delivery">
+              <span className="tag">Computer Village, Ikeja &middot; Nigeria &middot; Abroad</span>
+              <h3>Showroom pickup, Lagos dispatch &amp; nationwide cargo.</h3>
               <p>
-                Trusted delivery to every state, packed and insured for the
-                road.
+                Pick up directly at our Computer Village, Ikeja showroom for ₦0
+                delivery fee, book same-day Lagos dispatch, or ship insured to
+                any Nigerian state and international destinations.
               </p>
               <a
                 className="btn btn-ghost"
-                href={`https://wa.me/${whatsappNum}?text=Hello%2C%20I%27d%20like%20delivery%20outside%20Lagos.`}
+                href={`https://wa.me/${whatsappNum}?text=Hello%20ILLAI-RHASAK%2C%20I%27d%20like%20to%20arrange%20Computer%20Village%20Ikeja%20pickup%20or%20delivery.`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Ship to my state
-              </a>
-            </div>
-            <div className="seg">
-              <span className="tag">International</span>
-              <h3>Shipping abroad.</h3>
-              <p>
-                We regularly ship internationally. Tell us where and we will
-                quote it.
-              </p>
-              <a
-                className="btn btn-ghost"
-                href={`https://wa.me/${whatsappNum}?text=Hello%2C%20I%27d%20like%20an%20international%20shipping%20quote.`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Get an export quote
+                Arrange Pickup or Delivery
               </a>
             </div>
           </div>
@@ -557,7 +544,7 @@ export const HomePage: React.FC = () => {
             </h2>
 
             <div className="flex flex-wrap gap-2 mb-4">
-              {publishedProducts.slice(0, 4).map((p) => (
+              {publishedProducts.slice(0, 6).map((p) => (
                 <button
                   key={p.id}
                   type="button"
@@ -574,58 +561,71 @@ export const HomePage: React.FC = () => {
 
             <div className="specs" id="specRows">
               <div className="row">
-                <span>Processor</span>
+                <span>Primary Engine / CPU</span>
                 <span>
                   {String(
                     activeSpecProduct?.specs.processor ||
-                      activeSpecProduct?.specs.printTechnology ||
-                      activeSpecProduct?.specs.scannerType ||
-                      'Sample CPU'
+                      activeSpecProduct?.specs.printType ||
+                      activeSpecProduct?.specs.functions ||
+                      activeSpecProduct?.specs.capacityVa ||
+                      activeSpecProduct?.specs.consumableType ||
+                      activeSpecProduct?.specs.scanType ||
+                      'Enterprise Hardware'
                   )}
                 </span>
               </div>
               <div className="row">
-                <span>Memory</span>
+                <span>Memory / Speed</span>
                 <span>
                   {activeSpecProduct?.specs.ramGb
-                    ? `${activeSpecProduct.specs.ramGb} GB`
-                    : '16 GB'}
+                    ? `${activeSpecProduct.specs.ramGb} GB RAM`
+                    : activeSpecProduct?.specs.copySpeedPpm
+                    ? `${activeSpecProduct.specs.copySpeedPpm} PPM Copy/Print`
+                    : activeSpecProduct?.specs.printSpeedPpm
+                    ? `${activeSpecProduct.specs.printSpeedPpm} PPM Laser`
+                    : String(
+                        activeSpecProduct?.specs.topology ||
+                          activeSpecProduct?.specs.compatibility ||
+                          '16 GB'
+                      )}
                 </span>
               </div>
               <div className="row">
-                <span>Storage</span>
+                <span>Storage / Capacity</span>
                 <span>
                   {activeSpecProduct?.specs.storageGb
                     ? `${activeSpecProduct.specs.storageGb} GB SSD`
-                    : '512 GB SSD'}
+                    : String(
+                        activeSpecProduct?.specs.feederAndTrays ||
+                          activeSpecProduct?.specs.maxPaperSize ||
+                          activeSpecProduct?.specs.backupTime ||
+                          activeSpecProduct?.specs.pageYieldOrCapacity ||
+                          '512 GB SSD'
+                      )}
                 </span>
               </div>
               <div className="row">
-                <span>Display</span>
+                <span>Display / Output</span>
                 <span>
                   {String(
                     activeSpecProduct?.specs.display ||
-                      activeSpecProduct?.specs.maxResolutionDpi ||
-                      activeSpecProduct?.specs.opticalResolutionDpi ||
-                      '14" sample panel'
+                      activeSpecProduct?.specs.colorMode ||
+                      activeSpecProduct?.specs.tonerYield ||
+                      activeSpecProduct?.specs.outlets ||
+                      activeSpecProduct?.specs.authenticity ||
+                      'Full HD IPS'
                   )}
                 </span>
               </div>
               <div className="row">
-                <span>Graphics</span>
-                <span>
-                  {String(
-                    activeSpecProduct?.specs.graphics ||
-                      activeSpecProduct?.specs.connectivity ||
-                      'Integrated'
-                  )}
-                </span>
+                <span>Showroom Location</span>
+                <span>Computer Village, Ikeja, Lagos</span>
               </div>
               <div className="row">
-                <span>Warranty</span>
+                <span>Warranty &amp; Support</span>
                 <span>
                   {activeSpecProduct
-                    ? `${activeSpecProduct.warrantyMonths} months included with purchase`
+                    ? `${activeSpecProduct.warrantyMonths} months + General Servicing`
                     : 'Included with purchase'}
                 </span>
               </div>
@@ -643,34 +643,37 @@ export const HomePage: React.FC = () => {
             <div>
               <div className="eyebrow">Our promise</div>
               <h2>
-                Brand new.
+                Verified stock.
                 <br />
-                Covered.
+                Covered &amp; serviced.
               </h2>
             </div>
           </div>
           <div className="trust">
             <div className="tcard">
-              <div className="big">100%</div>
-              <h3>Brand new only</h3>
+              <div className="big">New + UK</div>
+              <h3>Brand New &amp; Grade-A UK Used</h3>
               <p>
-                Every unit we sell is new and sealed. No refurbished stock sold
-                as new.
+                Factory-sealed brand-new hardware alongside clean, tested
+                Grade-A UK corporate used laptops — clearly labeled so you
+                always know what you are buying.
               </p>
             </div>
             <div className="tcard">
               <div className="big">Per unit</div>
-              <h3>Warranty on each product</h3>
+              <h3>Warranty &amp; General Servicing</h3>
               <p>
-                Warranty comes with each brand new product you buy. Terms are
-                listed on every product page and in our policies.
+                Every machine carries its own serial-linked warranty, backed by
+                our Computer Village, Ikeja servicing desk, original toners,
+                drum kits, and UPS power protection.
               </p>
             </div>
             <div className="tcard">
               <div className="big">Clear</div>
               <h3>Returns you can read</h3>
               <p>
-                Our returns and exchange terms are published in full at{' '}
+                Our returns, inspection, and warranty terms are published in
+                full at{' '}
                 <Link
                   to="/policies/returns"
                   style={{ color: 'var(--blue2)', textDecoration: 'underline' }}
@@ -688,14 +691,15 @@ export const HomePage: React.FC = () => {
         <div className="wrap">
           <div className="band">
             <div className="eyebrow" style={{ color: '#fff' }}>
-              Ready when you are
+              Computer Village, Ikeja, Lagos &middot; Ready when you are
             </div>
             <h2 style={{ marginTop: '14px' }}>
-              Get the right machine, today.
+              Get the right machine or service, today.
             </h2>
             <p>
-              Speak to a specialist on WhatsApp for pricing, delivery, school
-              and bulk orders.
+              Speak to a specialist on WhatsApp ({whatsappDisplay}) for laptops,
+              photocopiers, UPS, consumables, general servicing, school and bulk
+              orders.
             </p>
             <a
               className="btn"
@@ -703,7 +707,7 @@ export const HomePage: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Chat on WhatsApp &rarr;
+              Speak to a Specialist: {whatsappDisplay} &rarr;
             </a>
           </div>
         </div>
@@ -711,7 +715,7 @@ export const HomePage: React.FC = () => {
 
       {/* =====================================================================
           PART 2: FULL FUNCTIONALITY BENEATH THE PROPOSAL DRAFT TEMPLATE
-          (Live Firebase Product Catalogue, Cart & Checkout Bar, Quote Desk)
+          (Live Firebase Product Catalogue, Cart & Checkout Bar, Quote & Servicing Desk)
          ===================================================================== */}
       <section
         ref={storefrontRef}
@@ -723,7 +727,7 @@ export const HomePage: React.FC = () => {
           <div className="head">
             <div>
               <div className="eyebrow">
-                Live Showroom Storefront &middot; Synced with Firebase
+                Computer Village, Ikeja Showroom &middot; Synced with Firebase
               </div>
               <h2>
                 Browse &amp; order
@@ -734,7 +738,7 @@ export const HomePage: React.FC = () => {
             <div className="space-y-3">
               <p className="lead">
                 Every price is in Nigerian Naira (₦), inclusive of 7.5% VAT,
-                with per-product warranty attached to each unit.
+                with per-product warranty attached to each item.
               </p>
               {pricing.items.length > 0 && (
                 <div className="flex flex-wrap items-center gap-3 pt-1">
@@ -763,28 +767,33 @@ export const HomePage: React.FC = () => {
           {/* Filter Toolbar */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-10 p-5 rounded-[22px] border border-[var(--line)] bg-[#0a0e18]">
             <div className="flex flex-wrap items-center gap-2">
-              {(
-                [
-                  { id: 'all', label: `All (${publishedProducts.length})` },
-                  { id: 'laptops', label: 'Laptops' },
-                  { id: 'desktops', label: 'Desktops' },
-                  { id: 'printers', label: 'Printers' },
-                  { id: 'scanners', label: 'Scanners' },
-                ] as const
-              ).map((tab) => (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCat('all');
+                  setSelectedBrand('all');
+                }}
+                className={`btn ${
+                  selectedCat === 'all' ? 'btn-primary' : 'btn-ghost'
+                }`}
+                style={{ padding: '10px 16px', fontSize: '13px' }}
+              >
+                All ({publishedProducts.length})
+              </button>
+              {visibleCategories.map((cat) => (
                 <button
-                  key={tab.id}
+                  key={cat.id}
                   type="button"
                   onClick={() => {
-                    setSelectedCat(tab.id);
+                    setSelectedCat(cat.slug);
                     setSelectedBrand('all');
                   }}
                   className={`btn ${
-                    selectedCat === tab.id ? 'btn-primary' : 'btn-ghost'
+                    selectedCat === cat.slug ? 'btn-primary' : 'btn-ghost'
                   }`}
-                  style={{ padding: '10px 18px', fontSize: '13px' }}
+                  style={{ padding: '10px 16px', fontSize: '13px' }}
                 >
-                  {tab.label}
+                  {cat.name}
                 </button>
               ))}
             </div>
@@ -808,7 +817,7 @@ export const HomePage: React.FC = () => {
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search model, CPU, RAM..."
+                placeholder="Search laptop, copier, UPS, toner..."
                 aria-label="Search hardware catalogue"
                 className="rounded-full border border-[var(--line)] bg-[#05070d] px-4 py-2.5 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--blue2)] focus:outline-none"
               />
@@ -903,15 +912,17 @@ export const HomePage: React.FC = () => {
             })}
           </div>
 
-          {/* Institutional & Export Quote Desk + Quick Store Links beneath Catalogue */}
+          {/* Institutional, General Servicing & Export Quote Desk + Quick Store Links */}
           <div className="mt-20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-7 p-8 rounded-[22px] border border-[var(--line)] bg-[#0a0e18] space-y-5">
-              <div className="eyebrow">Institutional &amp; Bulk Procurement Desk</div>
+              <div className="eyebrow">
+                Procurement &amp; General Servicing Desk &middot; Computer Village, Ikeja
+              </div>
               <h3 className="text-2xl sm:text-3xl font-bold font-display">
-                Request a formal quote or pro-forma invoice.
+                Request a quote, consumables supply, or general servicing.
               </h3>
               <p className="text-sm text-[var(--muted)]">
-                Saved directly to Firebase Firestore (`leads` collection) for our Ikeja sales team.
+                Logged directly to Firebase for our Computer Village, Ikeja specialist team ({whatsappDisplay}).
               </p>
 
               {quoteSavedId && (
@@ -919,7 +930,7 @@ export const HomePage: React.FC = () => {
                   role="status"
                   className="rounded-xl border border-[#38bdf8]/40 bg-[#2563ff]/15 p-4 text-sm text-[var(--ink)]"
                 >
-                  Quote request logged in Firebase ({quoteSavedId}). Our specialist team will reach out shortly.
+                  Request logged ({quoteSavedId}). Our specialist team at Computer Village, Ikeja will reach out shortly.
                 </div>
               )}
 
@@ -933,6 +944,7 @@ export const HomePage: React.FC = () => {
                         e.target.value as
                           | 'schools'
                           | 'bulk'
+                          | 'servicing'
                           | 'delivery'
                           | 'international'
                       )
@@ -941,6 +953,7 @@ export const HomePage: React.FC = () => {
                   >
                     <option value="schools">Schools &amp; Education Quote</option>
                     <option value="bulk">Bulk &amp; Corporate Supply</option>
+                    <option value="servicing">General Servicing &amp; Maintenance</option>
                     <option value="delivery">Lagos &amp; Nationwide Delivery</option>
                     <option value="international">International Export Quote</option>
                   </select>
@@ -978,17 +991,28 @@ export const HomePage: React.FC = () => {
                   required
                   value={quoteReq}
                   onChange={(e) => setQuoteReq(e.target.value)}
-                  placeholder="Required models and quantities (e.g. 20x HP ProBook 14, 2x LaserJet Printers) *"
+                  placeholder="Required machines, consumables, or servicing details (e.g. 15x UK Used Laptops, Canon Copier Servicing, APC UPS) *"
                   className="w-full rounded-xl border border-[var(--line)] bg-[#05070d] px-4 py-3 text-sm text-[var(--ink)]"
                 />
 
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  style={{ padding: '14px 24px', fontSize: '14px' }}
-                >
-                  Submit Quote Request
-                </button>
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    style={{ padding: '14px 24px', fontSize: '14px' }}
+                  >
+                    Submit Request
+                  </button>
+                  <a
+                    href={`https://wa.me/${whatsappNum}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-ghost"
+                    style={{ padding: '14px 20px', fontSize: '14px' }}
+                  >
+                    Speak to a Specialist: {whatsappDisplay}
+                  </a>
+                </div>
               </form>
             </div>
 
@@ -998,7 +1022,7 @@ export const HomePage: React.FC = () => {
                 Everything at your fingertips.
               </h3>
               <p className="text-sm text-[var(--muted)]">
-                Access dedicated buyer portals, instant order receipts, and the live Firebase Admin &amp; CMS control panel.
+                Access dedicated buyer portals, instant order receipts, and the streamlined Catalog &amp; Image Upload Admin Console.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
@@ -1028,7 +1052,7 @@ export const HomePage: React.FC = () => {
                   className="btn btn-ghost justify-start"
                   style={{ padding: '12px 18px', fontSize: '14px' }}
                 >
-                  Admin &amp; CMS &rarr;
+                  Admin Console &rarr;
                 </Link>
                 <Link
                   to="/schools"

@@ -1,7 +1,7 @@
 import { Order, PricedLineItem, Product } from '../types';
 import { formatNgnFromKobo } from './money';
 
-export const DEFAULT_WHATSAPP_NUMBER = '2349046453977';
+export const DEFAULT_WHATSAPP_NUMBER = '2347061766728';
 
 export function cleanWhatsAppNumber(phone: string = DEFAULT_WHATSAPP_NUMBER): string {
   const digits = phone.replace(/[^\d]/g, '');
@@ -22,7 +22,7 @@ export function buildWhatsAppUrl(
 
 export function buildGeneralInquiryWhatsAppUrl(phone = DEFAULT_WHATSAPP_NUMBER): string {
   return buildWhatsAppUrl(
-    'Hello ILLAI-RHASAK Nig. Enterprises, I would like to inquire about brand-new hardware availability and pricing in Ikeja, Lagos.',
+    'Hello ILLAI-RHASAK Nig. Enterprises, I would like to inquire about hardware availability, pricing, or servicing in Computer Village, Ikeja, Lagos.',
     phone
   );
 }
@@ -34,30 +34,32 @@ export function buildProductWhatsAppUrl(
   const formattedPrice = formatNgnFromKobo(product.priceKobo);
   const msg = [
     `Hello ILLAI-RHASAK Nig. Enterprises,`,
-    `I want to order / inquire about this machine:`,
+    `I want to order / inquire about this item:`,
     `• Product: ${product.name} (${product.brand})`,
     `• Listed Price (VAT Incl.): ${formattedPrice}`,
     `• Product Warranty: ${product.warrantyMonths} Months`,
-    `Please confirm immediate stock availability for pickup in Ikeja or delivery.`,
+    `Please confirm immediate stock availability for pickup at Computer Village, Ikeja or delivery.`,
   ].join('\n');
   return buildWhatsAppUrl(msg, phone);
 }
 
 export function buildSegmentWhatsAppUrl(
-  segment: 'schools' | 'bulk' | 'lagos' | 'nationwide' | 'international',
+  segment: 'schools' | 'bulk' | 'lagos' | 'nationwide' | 'international' | 'servicing',
   phone = DEFAULT_WHATSAPP_NUMBER
 ): string {
   const messages: Record<typeof segment, string> = {
     schools:
-      'Hello ILLAI-RHASAK Nig. Enterprises, I am contacting you regarding a School / ICT Lab hardware bundle (laptops, desktop, printer, scanner). Please share your current term pricing and pro-forma invoice process.',
+      'Hello ILLAI-RHASAK Nig. Enterprises, I am contacting you regarding a School / ICT Lab hardware bundle (laptops, desktop, printer, scanner, photocopier, UPS). Please share your current term pricing and pro-forma invoice process.',
     bulk:
       'Hello ILLAI-RHASAK Nig. Enterprises, we would like to request corporate volume pricing and a formal invoice for a bulk hardware order.',
     lagos:
-      'Hello ILLAI-RHASAK Nig. Enterprises, I would like to arrange same-day/next-day Lagos delivery or Ikeja showroom pickup for a new machine.',
+      'Hello ILLAI-RHASAK Nig. Enterprises, I would like to arrange same-day/next-day Lagos delivery or Computer Village, Ikeja showroom pickup.',
     nationwide:
       'Hello ILLAI-RHASAK Nig. Enterprises, I am ordering from outside Lagos and would like to confirm inter-state waybill/air delivery timelines and insurance.',
     international:
-      'Hello ILLAI-RHASAK Nig. Enterprises, I would like to request an international shipping quote for brand-new computer/office equipment.',
+      'Hello ILLAI-RHASAK Nig. Enterprises, I would like to request an international shipping quote for computer/office equipment.',
+    servicing:
+      'Hello ILLAI-RHASAK Nig. Enterprises, I would like to book General Servicing / Maintenance or order consumables for our laptops, printers, photocopiers, or UPS machines at Computer Village, Ikeja.',
   };
 
   return buildWhatsAppUrl(messages[segment], phone);

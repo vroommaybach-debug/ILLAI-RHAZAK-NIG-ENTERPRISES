@@ -214,6 +214,135 @@ export const CATEGORY_3D_TEMPLATES: Record<CategorySlug, CategoryTemplateDefinit
       },
     ],
   },
+  'uk-used': {
+    categoryId: 'uk-used',
+    title: 'Grade-A UK Used Laptop 3D Template',
+    defaultColorway: '#94a3b8',
+    defaultFinish: 'metal',
+    defaultDimensions: { widthCm: 31.5, depthCm: 22.4, heightCm: 1.9 },
+    openLidLabel: 'Open lid',
+    openPortsLabel: 'Open ports',
+    linkedSpecFields: ['processor', 'ramGb', 'storageGb', 'display', 'gradeCondition', 'batteryHealth'],
+    namedParts: [
+      {
+        partName: 'base',
+        label: 'Tested Main Logic Deck',
+        linkedSpecField: 'processor',
+        secondarySpecFields: ['ramGb', 'storageGb'],
+        description: 'Diagnostic-certified Grade-A motherboard, cooling fan, and original battery.',
+      },
+      {
+        partName: 'screen',
+        label: 'Spotless Display Panel',
+        linkedSpecField: 'display',
+        secondarySpecFields: ['gradeCondition'],
+        description: 'Grade-A clean screen tested for zero dead pixels or pressure marks.',
+      },
+      {
+        partName: 'keyboard',
+        label: 'Backlit UK/US Keyboard',
+        linkedSpecField: 'ramGb',
+        secondarySpecFields: ['batteryHealth'],
+        description: 'Fully tested tactile keyboard deck and touchpad.',
+      },
+    ],
+  },
+  photocopiers: {
+    categoryId: 'photocopiers',
+    title: 'Multifunction Photocopier 3D Template',
+    defaultColorway: '#cbd5e1',
+    defaultFinish: 'matte',
+    defaultDimensions: { widthCm: 56.5, depthCm: 69.2, heightCm: 88.0 },
+    openLidLabel: 'Open DADF cover',
+    openPortsLabel: 'Slide cassettes',
+    linkedSpecFields: ['copySpeedCpm', 'maxPaperSize', 'duplexRadf', 'tonerYield', 'monthlyVolume', 'connectivity'],
+    namedParts: [
+      {
+        partName: 'body',
+        label: 'Drum & Fuser Copy Engine',
+        linkedSpecField: 'copySpeedCpm',
+        secondarySpecFields: ['tonerYield'],
+        description: 'Heavy-duty laser drum, developer unit, and fuser assembly.',
+      },
+      {
+        partName: 'paper-tray',
+        label: 'Dual A3/A4 Paper Cassettes',
+        linkedSpecField: 'maxPaperSize',
+        secondarySpecFields: ['monthlyVolume'],
+        description: 'High-capacity cassettes supporting A4, A3, and Legal media.',
+      },
+      {
+        partName: 'output-tray',
+        label: 'DADF Automatic Feeder',
+        linkedSpecField: 'duplexRadf',
+        description: 'Single-pass duplex document feeder for rapid batch copying.',
+      },
+      {
+        partName: 'control-panel',
+        label: 'Touchscreen Operator Console',
+        linkedSpecField: 'connectivity',
+        description: 'Smart operator touchscreen for copy, scan-to-folder, and job accounting.',
+      },
+    ],
+  },
+  ups: {
+    categoryId: 'ups',
+    title: 'UPS & Power Backup 3D Template',
+    defaultColorway: '#0f172a',
+    defaultFinish: 'matte',
+    defaultDimensions: { widthCm: 17.0, depthCm: 43.9, heightCm: 21.9 },
+    openLidLabel: 'Inspect battery bay',
+    openPortsLabel: 'Inspect surge outlets',
+    linkedSpecFields: ['capacityVa', 'wattageW', 'topology', 'TransferTimeMs', 'batteryRuntime', 'outlets'],
+    namedParts: [
+      {
+        partName: 'tower',
+        label: 'AVR & Inverter Core',
+        linkedSpecField: 'capacityVa',
+        secondarySpecFields: ['wattageW', 'topology'],
+        description: 'Pure sine-wave inverter and automatic voltage regulation (AVR) transformer.',
+      },
+      {
+        partName: 'front-ports',
+        label: 'Digital Load & Battery LCD',
+        linkedSpecField: 'batteryRuntime',
+        secondarySpecFields: ['TransferTimeMs'],
+        description: 'Real-time input/output voltage, battery charge, and load status display.',
+      },
+      {
+        partName: 'side-panel',
+        label: 'Hot-Swappable VRLA Battery Bay',
+        linkedSpecField: 'outlets',
+        description: 'Sealed lead-acid battery module with surge-protected output sockets.',
+      },
+    ],
+  },
+  consumables: {
+    categoryId: 'consumables',
+    title: 'Toner, Drum & Consumable Kit 3D Template',
+    defaultColorway: '#1e293b',
+    defaultFinish: 'matte',
+    defaultDimensions: { widthCm: 36.2, depthCm: 11.4, heightCm: 13.8 },
+    openLidLabel: 'Inspect cartridge',
+    openPortsLabel: 'Inspect chip & seal',
+    linkedSpecFields: ['consumableType', 'compatibleModels', 'pageYield', 'condition'],
+    namedParts: [
+      {
+        partName: 'body',
+        label: 'Genuine Cartridge & Drum Housing',
+        linkedSpecField: 'consumableType',
+        secondarySpecFields: ['condition'],
+        description: 'Factory-sealed imaging toner/drum assembly for crisp print density.',
+      },
+      {
+        partName: 'control-panel',
+        label: 'Smart Chip & Compatibility',
+        linkedSpecField: 'compatibleModels',
+        secondarySpecFields: ['pageYield'],
+        description: 'OEM-verified cartridge telemetry chip and rated page yield.',
+      },
+    ],
+  },
 };
 
 export interface ResolvedModelSource {
@@ -225,9 +354,10 @@ export interface ResolvedModelSource {
 }
 
 export function normalizeCategorySlug(cat: string): CategorySlug {
-  if (cat === 'desktops' || cat === 'printers' || cat === 'scanners' || cat === 'laptops') {
-    return cat;
-  }
+  if (cat === 'uk-used' || cat === 'laptops') return 'laptops';
+  if (cat === 'desktops' || cat === 'ups') return 'desktops';
+  if (cat === 'printers' || cat === 'photocopiers' || cat === 'consumables') return 'printers';
+  if (cat === 'scanners') return 'scanners';
   return 'laptops';
 }
 

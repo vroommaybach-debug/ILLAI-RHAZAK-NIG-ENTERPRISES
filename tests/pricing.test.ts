@@ -288,7 +288,7 @@ test('motion.ts & whatsapp.ts: reduced-motion disables spatial displacement and 
   assert.equal(reducedConfig.from.y, 0);
 
   const prodUrl = buildProductWhatsAppUrl(SAMPLE_PRODUCTS[0]);
-  assert.ok(prodUrl.startsWith('https://wa.me/2349046453977?text='));
+  assert.ok(prodUrl.startsWith('https://wa.me/2347061766728?text='));
   const decodedProd = decodeURIComponent(prodUrl.split('?text=')[1]);
   assert.ok(decodedProd.includes('HP EliteBook 840 G10'));
   assert.ok(decodedProd.includes('12 Months'));

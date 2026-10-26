@@ -95,12 +95,12 @@ export const ShopPage: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/10">
           <div className="space-y-2">
-            <Eyebrow>Brand-New Catalog · 7.5% VAT Inclusive</Eyebrow>
+            <Eyebrow>Computer Village, Ikeja · Brand-New & Grade-A UK Used · 7.5% VAT Inclusive</Eyebrow>
             <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#F4F6FB]">
-              Hardware Storefront
+              Hardware, Photocopier, UPS & Consumables Storefront
             </h1>
             <p className="text-sm text-[#9AA3B8] max-w-2xl">
-              Every machine is supplied brand new with its own per-product warranty duration and VAT-inclusive NGN price.
+              Brand-new & Grade-A UK Used laptops, desktops, printers, heavy-duty photocopiers, scanners, UPS power backup, and genuine maintenance consumables — backed by Computer Village, Ikeja general servicing.
             </p>
           </div>
 

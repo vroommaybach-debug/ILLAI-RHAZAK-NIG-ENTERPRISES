@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <radialGradient id="g-cons" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#EF2B3A" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#05070D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="#080C16"/>
+  <circle cx="400" cy="300" r="260" fill="url(#g-cons)"/>
+  <!-- Laser Toner Cartridge Drum Assembly -->
+  <rect x="170" y="190" width="460" height="130" rx="18" fill="#1E293B" stroke="#38BDF8" stroke-width="2.5"/>
+  <rect x="200" y="215" width="400" height="80" rx="10" fill="#0F172A" stroke="#334155" stroke-width="2"/>
+  <rect x="225" y="240" width="160" height="30" rx="6" fill="#2563FF"/>
+  <circle cx="545" cy="255" r="22" fill="#F5B93A"/>
+  <!-- NVMe SSD / RAM & Ink Bottle Extras -->
+  <rect x="210" y="355" width="230" height="75" rx="12" fill="#0F172A" stroke="#F5B93A" stroke-width="2"/>
+  <rect x="230" y="375" width="45" height="35" rx="4" fill="#38BDF8" fill-opacity="0.4"/>
+  <rect x="290" y="375" width="45" height="35" rx="4" fill="#38BDF8" fill-opacity="0.4"/>
+  <rect x="350" y="375" width="65" height="35" rx="4" fill="#EF2B3A" fill-opacity="0.5"/>
+  <!-- High Yield Ink Bottle -->
+  <rect x="480" y="340" width="90" height="105" rx="14" fill="#1E293B" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="505" y="310" width="40" height="30" rx="6" fill="#38BDF8"/>
+</svg>
